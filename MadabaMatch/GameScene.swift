@@ -88,4 +88,106 @@ class GameScene: SKScene {
             //board!.advanceTurn()
         }
     }
+    func spawnComboLabel(at:CGPoint,type:ComboID){
+        let label=SKLabelNode()
+        let labelShadow=SKLabelNode()
+        label.fontName="AvenirNext-Bold"
+        labelShadow.fontName="AvenirNext-Bold"
+        label.fontSize=40
+        labelShadow.fontSize=40
+        //let grow=SKAction.scale(by: 2, duration: 0.2)
+        //let shrink=SKAction.scale(by: 0.1, duration: 0.2)
+        let fadeIn=SKAction.fadeIn(withDuration: 0.5)
+        let fadeOut=SKAction.fadeOut(withDuration: 2)
+        let sequence=SKAction.sequence([fadeIn,fadeOut])
+        let node=SKNode()
+        node.addChild(labelShadow)
+        node.addChild(label)
+        switch type{
+            case .single:
+                label.text=""
+            case .duo:
+                label.text="DOUBLE! 2X"
+                labelShadow.text="DOUBLE! 2X"
+                label.fontColor=UIColor.white
+                labelShadow.fontColor=UIColor.black
+                label.position=at
+                labelShadow.position.x=at.x-2
+                labelShadow.position.y=at.y-2
+                self.addChild(node)
+                node.run(sequence,completion: {node.removeFromParent()})
+            case .tri:
+            label.text="TRIPLE! 3X"
+            labelShadow.text="TRIPLE! 3X"
+            label.fontColor=UIColor.white
+            labelShadow.fontColor=UIColor.black
+            label.position=at
+            labelShadow.position.x=at.x-2
+            labelShadow.position.y=at.y-2
+            self.addChild(node)
+            node.run(sequence,completion: {node.removeFromParent()})
+            case .quad:
+            label.text="QUADRA! 4X"
+            labelShadow.text="QUADRA! 4X"
+            label.fontColor=UIColor.white
+            labelShadow.fontColor=UIColor.black
+            label.position=at
+            labelShadow.position.x=at.x-2
+            labelShadow.position.y=at.y-2
+            self.addChild(node)
+            node.run(sequence,completion: {node.removeFromParent()})
+            case .penta:
+            label.text="PENTA! 5X"
+            labelShadow.text="PENTA! 5X"
+            label.fontColor=UIColor.white
+            labelShadow.fontColor=UIColor.black
+            label.position=at
+            labelShadow.position.x=at.x-2
+            labelShadow.position.y=at.y-2
+            self.addChild(node)
+            node.run(sequence,completion: {node.removeFromParent()})
+            case .sexta:
+            label.text="SEXTA! 6X"
+            labelShadow.text="SEXTA! 6X"
+            label.fontColor=UIColor.white
+            labelShadow.fontColor=UIColor.black
+            label.position=at
+            labelShadow.position.x=at.x-2
+            labelShadow.position.y=at.y-2
+            self.addChild(node)
+            node.run(sequence,completion: {node.removeFromParent()})
+            case .sept:
+            label.text="FANTASTC!"
+            labelShadow.text="FANTASTIC!"
+            label.fontColor=UIColor.white
+            labelShadow.fontColor=UIColor.black
+            label.position=at
+            labelShadow.position.x=at.x-2
+            labelShadow.position.y=at.y-2
+            self.addChild(node)
+            node.run(sequence,completion: {node.removeFromParent()})
+            case .octo:
+            label.text="GODLIKE"
+            labelShadow.text="GODLIKE"
+            label.fontColor=UIColor.white
+            labelShadow.fontColor=UIColor.black
+            label.position=at
+            labelShadow.position.x=at.x-2
+            labelShadow.position.y=at.y-2
+            self.addChild(node)
+            node.run(sequence,completion: {node.removeFromParent()})
+        }
+    }
+    
+    
+}
+enum ComboID:CaseIterable{
+    case single
+    case duo
+    case tri
+    case quad
+    case penta
+    case sexta
+    case sept
+    case octo
 }

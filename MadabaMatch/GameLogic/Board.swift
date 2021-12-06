@@ -7,6 +7,7 @@
 
 import Foundation
 import SpriteKit
+
 class Board{
     var tiles:[[Tile]]
     var r:Int
@@ -18,7 +19,9 @@ class Board{
     var selectedTile:Tile?
     var tf:TileFactory?
     var gs:GameScene
-    var totalMoves=0
+    var movesRemaining=50
+    var targetScore=500
+    var lastTouch:UITouch?
     init(w:Double,h:Double,r:Int,c:Int,gs:GameScene){
         self.w=w
         self.h=h
@@ -40,6 +43,7 @@ class Board{
     }
     
     func touchDown(touch:UITouch){
+        lastTouch=touch
         if !tileSelected{
             for r in tiles{
                 for t in r{
@@ -59,7 +63,6 @@ class Board{
         if tileSelected{
             let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
             selectedTile!.node.run(drag)
-            
             for r in tiles{
                 for t in r{
                     if t.node.contains(touch.location(in: gs)) && !t.selected{
@@ -68,7 +71,7 @@ class Board{
                             t.switchPosition(with: selectedTile!)
                             t.updatePosition(animated: true, 0.1)
                             selectedTile!.timesMoved+=1
-                            totalMoves+=1
+                            movesRemaining-=1
                         }
                     }
                 }
@@ -105,14 +108,26 @@ class Board{
     }
     func advanceTurn(){
         highlightGroups()
-        calculateScore()
-        removeGroups()
-        repopulateBoard()
-        highlightGroups()
-        if(!groups.isEmpty){
-            advanceTurn()
+        var numGrouped=0
+        for g in groups{
+            numGrouped+=g.count
         }
+        calculateScore()
+        removeGroups(completionHandler:{ progress in
+            if progress==numGrouped{
+                self.shiftDown()
+                self.repopulateBoard()
+                self.highlightGroups()
+                if(!self.groups.isEmpty){
+                    self.advanceTurn()
+                }else{
+                    self.combo=0
+                }
+            }
+        })
+        
     }
+    typealias GroupsRemoved = (_ progress:Int)->Void
     var score:Int=0
     var maxCombo:Int=0
     var groups:[[Tile]]=[[]]
@@ -145,28 +160,34 @@ class Board{
         }
         
     }
+    var combo:Int=0
     func calculateScore(){
         var turnScore=0
         var groupScore=0
         for g in groups{
-            groupScore=(g.count-3)*g.count
-            if turnScore==0{
-                turnScore=groupScore
-            }else{
-                turnScore+=turnScore*groupScore
-            }
+            combo+=1
+            gs.spawnComboLabel(at: averagePosition(of: g), type: getCombo(i: combo))
+            groupScore=(g.count-3)*g.count*combo
+            turnScore+=groupScore
         }
-        if turnScore>maxCombo{
-            maxCombo=turnScore
+        if combo>maxCombo{
+            maxCombo=combo
         }
         score+=turnScore
     }
-    func removeGroups(){
+    func removeGroups(completionHandler: @escaping GroupsRemoved){
+        let rotate=SKAction.rotate(byAngle: 720, duration: 0.5)
+        let shrink=SKAction.scale(by: 0.1, duration: 0.5)
+        var count=0
         for g in groups{
             for t in g{
-                t.node.removeFromParent()
+                t.node.run(rotate)
+                t.node.run(shrink,completion: {t.node.removeFromParent();count+=1;completionHandler(count)})
             }
         }
+        
+    }
+    func shiftDown(){
         for r in tiles{
             for t in r{
                     if(emptyBelow(r: t.row, c: t.col)){
@@ -178,7 +199,6 @@ class Board{
                     }
             }
         }
-        
     }
     func moveDown(tile:Tile,move:Int){
         
@@ -260,5 +280,36 @@ class Board{
         floodFill(rPos: rPos+1, cPos: cPos, target: target)
         floodFill(rPos: rPos, cPos: cPos-1, target: target)
         floodFill(rPos: rPos, cPos: cPos+1, target: target)
+    }
+    func getCombo(i:Int)->ComboID{
+        if i<2{
+            return ComboID.single
+        }else if i==2{
+            return ComboID.duo
+        }else if i==3{
+            return ComboID.tri
+        }else if i==4{
+            return ComboID.quad
+        }else if i==5{
+            return ComboID.penta
+        }else if i==6{
+            return ComboID.sexta
+        }else if i==7{
+            return ComboID.sept
+        }else if i>7{
+            return ComboID.octo
+        }
+        return ComboID.single
+    }
+    func averagePosition(of:[Tile])->CGPoint{
+        var ax=0.0
+        var ay=0.0
+        for t in of{
+            ax+=t.position.x
+            ay+=t.position.y
+        }
+        ax=ax/Double(of.count)
+        ay=ay/Double(of.count)
+        return CGPoint(x: Double(ax), y: Double(ay))
     }
 }
