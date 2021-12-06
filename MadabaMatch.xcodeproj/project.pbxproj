@@ -18,6 +18,9 @@
 		C43410CA275D71B4003D6259 /* MadabaMatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410C9275D71B4003D6259 /* MadabaMatchTests.swift */; };
 		C43410D4275D71B4003D6259 /* MadabaMatchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410D3275D71B4003D6259 /* MadabaMatchUITests.swift */; };
 		C43410D6275D71B4003D6259 /* MadabaMatchUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410D5275D71B4003D6259 /* MadabaMatchUITestsLaunchTests.swift */; };
+		C43410E4275D75EC003D6259 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410E3275D75EC003D6259 /* Board.swift */; };
+		C43410E6275D75F6003D6259 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410E5275D75F6003D6259 /* Tile.swift */; };
+		C43410E8275D760C003D6259 /* TileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410E7275D760C003D6259 /* TileFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +55,9 @@
 		C43410CF275D71B4003D6259 /* MadabaMatchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadabaMatchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C43410D3275D71B4003D6259 /* MadabaMatchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadabaMatchUITests.swift; sourceTree = "<group>"; };
 		C43410D5275D71B4003D6259 /* MadabaMatchUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadabaMatchUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C43410E3275D75EC003D6259 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
+		C43410E5275D75F6003D6259 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
+		C43410E7275D760C003D6259 /* TileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +108,7 @@
 		C43410AE275D71B2003D6259 /* MadabaMatch */ = {
 			isa = PBXGroup;
 			children = (
+				C43410E2275D75D4003D6259 /* GameLogic */,
 				C43410AF275D71B2003D6259 /* AppDelegate.swift */,
 				C43410B1275D71B2003D6259 /* GameScene.sks */,
 				C43410B3275D71B2003D6259 /* Actions.sks */,
@@ -129,6 +136,16 @@
 				C43410D5275D71B4003D6259 /* MadabaMatchUITestsLaunchTests.swift */,
 			);
 			path = MadabaMatchUITests;
+			sourceTree = "<group>";
+		};
+		C43410E2275D75D4003D6259 /* GameLogic */ = {
+			isa = PBXGroup;
+			children = (
+				C43410E3275D75EC003D6259 /* Board.swift */,
+				C43410E5275D75F6003D6259 /* Tile.swift */,
+				C43410E7275D760C003D6259 /* TileFactory.swift */,
+			);
+			path = GameLogic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -266,6 +283,9 @@
 			files = (
 				C43410B6275D71B2003D6259 /* GameScene.swift in Sources */,
 				C43410B8275D71B2003D6259 /* GameViewController.swift in Sources */,
+				C43410E6275D75F6003D6259 /* Tile.swift in Sources */,
+				C43410E4275D75EC003D6259 /* Board.swift in Sources */,
+				C43410E8275D760C003D6259 /* TileFactory.swift in Sources */,
 				C43410B0275D71B2003D6259 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
