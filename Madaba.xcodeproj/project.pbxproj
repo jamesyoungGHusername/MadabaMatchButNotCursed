@@ -50,9 +50,9 @@
 		C43410BA275D71B2003D6259 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C43410BC275D71B4003D6259 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C43410BF275D71B4003D6259 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		C43410C5275D71B4003D6259 /* MadabaMatchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadabaMatchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C43410C5275D71B4003D6259 /* MadabaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadabaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C43410C9275D71B4003D6259 /* MadabaMatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadabaMatchTests.swift; sourceTree = "<group>"; };
-		C43410CF275D71B4003D6259 /* MadabaMatchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadabaMatchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C43410CF275D71B4003D6259 /* MadabaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadabaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C43410D3275D71B4003D6259 /* MadabaMatchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadabaMatchUITests.swift; sourceTree = "<group>"; };
 		C43410D5275D71B4003D6259 /* MadabaMatchUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadabaMatchUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C43410E3275D75EC003D6259 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
@@ -99,8 +99,8 @@
 			isa = PBXGroup;
 			children = (
 				C43410AC275D71B2003D6259 /* Madaba.app */,
-				C43410C5275D71B4003D6259 /* MadabaMatchTests.xctest */,
-				C43410CF275D71B4003D6259 /* MadabaMatchUITests.xctest */,
+				C43410C5275D71B4003D6259 /* MadabaTests.xctest */,
+				C43410CF275D71B4003D6259 /* MadabaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -151,9 +151,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C43410AB275D71B2003D6259 /* MadabaMatch */ = {
+		C43410AB275D71B2003D6259 /* Madaba */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C43410D9275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaMatch" */;
+			buildConfigurationList = C43410D9275D71B4003D6259 /* Build configuration list for PBXNativeTarget "Madaba" */;
 			buildPhases = (
 				C43410A8275D71B2003D6259 /* Sources */,
 				C43410A9275D71B2003D6259 /* Frameworks */,
@@ -163,14 +163,14 @@
 			);
 			dependencies = (
 			);
-			name = MadabaMatch;
+			name = Madaba;
 			productName = MadabaMatch;
 			productReference = C43410AC275D71B2003D6259 /* Madaba.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C43410C4275D71B4003D6259 /* MadabaMatchTests */ = {
+		C43410C4275D71B4003D6259 /* MadabaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C43410DC275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaMatchTests" */;
+			buildConfigurationList = C43410DC275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaTests" */;
 			buildPhases = (
 				C43410C1275D71B4003D6259 /* Sources */,
 				C43410C2275D71B4003D6259 /* Frameworks */,
@@ -181,14 +181,14 @@
 			dependencies = (
 				C43410C7275D71B4003D6259 /* PBXTargetDependency */,
 			);
-			name = MadabaMatchTests;
+			name = MadabaTests;
 			productName = MadabaMatchTests;
-			productReference = C43410C5275D71B4003D6259 /* MadabaMatchTests.xctest */;
+			productReference = C43410C5275D71B4003D6259 /* MadabaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C43410CE275D71B4003D6259 /* MadabaMatchUITests */ = {
+		C43410CE275D71B4003D6259 /* MadabaUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C43410DF275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaMatchUITests" */;
+			buildConfigurationList = C43410DF275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaUITests" */;
 			buildPhases = (
 				C43410CB275D71B4003D6259 /* Sources */,
 				C43410CC275D71B4003D6259 /* Frameworks */,
@@ -199,9 +199,9 @@
 			dependencies = (
 				C43410D1275D71B4003D6259 /* PBXTargetDependency */,
 			);
-			name = MadabaMatchUITests;
+			name = MadabaUITests;
 			productName = MadabaMatchUITests;
-			productReference = C43410CF275D71B4003D6259 /* MadabaMatchUITests.xctest */;
+			productReference = C43410CF275D71B4003D6259 /* MadabaUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -227,7 +227,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C43410A7275D71B2003D6259 /* Build configuration list for PBXProject "MadabaMatch" */;
+			buildConfigurationList = C43410A7275D71B2003D6259 /* Build configuration list for PBXProject "Madaba" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -240,9 +240,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C43410AB275D71B2003D6259 /* MadabaMatch */,
-				C43410C4275D71B4003D6259 /* MadabaMatchTests */,
-				C43410CE275D71B4003D6259 /* MadabaMatchUITests */,
+				C43410AB275D71B2003D6259 /* Madaba */,
+				C43410C4275D71B4003D6259 /* MadabaTests */,
+				C43410CE275D71B4003D6259 /* MadabaUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -312,12 +312,12 @@
 /* Begin PBXTargetDependency section */
 		C43410C7275D71B4003D6259 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C43410AB275D71B2003D6259 /* MadabaMatch */;
+			target = C43410AB275D71B2003D6259 /* Madaba */;
 			targetProxy = C43410C6275D71B4003D6259 /* PBXContainerItemProxy */;
 		};
 		C43410D1275D71B4003D6259 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C43410AB275D71B2003D6259 /* MadabaMatch */;
+			target = C43410AB275D71B2003D6259 /* Madaba */;
 			targetProxy = C43410D0275D71B4003D6259 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -464,7 +464,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = XCBTW98MC4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -492,7 +492,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = XCBTW98MC4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -535,7 +535,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MadabaMatch.app/MadabaMatch";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Madaba.app/Madaba";
 			};
 			name = Debug;
 		};
@@ -560,7 +560,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MadabaMatch.app/MadabaMatch";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Madaba.app/Madaba";
 			};
 			name = Release;
 		};
@@ -613,7 +613,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C43410A7275D71B2003D6259 /* Build configuration list for PBXProject "MadabaMatch" */ = {
+		C43410A7275D71B2003D6259 /* Build configuration list for PBXProject "Madaba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C43410D7275D71B4003D6259 /* Debug */,
@@ -622,7 +622,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C43410D9275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaMatch" */ = {
+		C43410D9275D71B4003D6259 /* Build configuration list for PBXNativeTarget "Madaba" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C43410DA275D71B4003D6259 /* Debug */,
@@ -631,7 +631,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C43410DC275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaMatchTests" */ = {
+		C43410DC275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C43410DD275D71B4003D6259 /* Debug */,
@@ -640,7 +640,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C43410DF275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaMatchUITests" */ = {
+		C43410DF275D71B4003D6259 /* Build configuration list for PBXNativeTarget "MadabaUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C43410E0275D71B4003D6259 /* Debug */,
