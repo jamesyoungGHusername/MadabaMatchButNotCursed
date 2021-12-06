@@ -112,19 +112,25 @@ class Board{
         for g in groups{
             numGrouped+=g.count
         }
-        calculateScore()
-        removeGroups(completionHandler:{ progress in
-            if progress==numGrouped{
-                self.shiftDown()
-                self.repopulateBoard()
-                self.highlightGroups()
-                if(!self.groups.isEmpty){
-                    self.advanceTurn()
-                }else{
-                    self.combo=0
+        if(numGrouped>0){
+            removeGroups(completionHandler:{ progress in
+                if progress==numGrouped{
+                    self.shiftDown()
+                    self.repopulateBoard(completionHandler:{ numDone in
+                        if numDone==numGrouped{
+                            self.highlightGroups()
+                            if(!self.groups.isEmpty){
+                                self.groups.removeAll()
+                                self.advanceTurn()
+                            }else{
+                                self.combo=0
+                            }
+                        }
+                    })
+                    
                 }
-            }
-        })
+            })
+        }
         
     }
     typealias GroupsRemoved = (_ progress:Int)->Void
@@ -160,26 +166,38 @@ class Board{
         }
         
     }
-    var combo:Int=0
-    func calculateScore(){
-        var turnScore=0
+    var combo:Int = -1
+    func calculateScore(g:[Tile]){
+        print("calculating score for group of \(g.count)")
         var groupScore=0
-        for g in groups{
-            combo+=1
-            gs.spawnComboLabel(at: averagePosition(of: g), type: getCombo(i: combo))
-            groupScore=(g.count-3)*g.count*combo
-            turnScore+=groupScore
-        }
+        let comboLabel=gs.getComboLabel(at: averagePosition(of: g), type: getCombo(i: combo))
+        let fadeIn=SKAction.fadeIn(withDuration: 0.5)
+        let fadeOut=SKAction.fadeOut(withDuration: 2)
+        let shift=SKAction.move(by: CGVector(dx: 20, dy: 5), duration: 2.5)
+        let wait=SKAction.wait(forDuration: 0.1)
+        let sequence=SKAction.sequence([wait,fadeIn,fadeOut])
+        let pointSeq=SKAction.sequence([fadeIn,fadeOut])
+        gs.addChild(comboLabel)
+        comboLabel.run(shift)
+        comboLabel.run(sequence,completion:{comboLabel.removeFromParent()})
+        groupScore=(g.count-3)*g.count*combo
         if combo>maxCombo{
             maxCombo=combo
         }
-        score+=turnScore
+        let pointLabel=gs.getPointLabel(at: CGPoint(x:averagePosition(of: g).x,y: averagePosition(of: g).y-tf!.tileHeight/2), points: groupScore)
+        gs.addChild(pointLabel)
+        pointLabel.run(shift)
+        pointLabel.run(pointSeq,completion:{pointLabel.removeFromParent()})
+        score+=groupScore
+        print("combo of \(combo)")
     }
     func removeGroups(completionHandler: @escaping GroupsRemoved){
-        let rotate=SKAction.rotate(byAngle: 720, duration: 0.5)
-        let shrink=SKAction.scale(by: 0.1, duration: 0.5)
+        let rotate=SKAction.rotate(byAngle: 540, duration: 0.3)
+        let shrink=SKAction.scale(by: 0.1, duration: 0.3)
         var count=0
         for g in groups{
+            combo+=1
+            self.calculateScore(g:g)
             for t in g{
                 t.node.run(rotate)
                 t.node.run(shrink,completion: {t.node.removeFromParent();count+=1;completionHandler(count)})
@@ -237,7 +255,8 @@ class Board{
             return true
         }
     }
-    func repopulateBoard(){
+    func repopulateBoard(completionHandler: @escaping GroupsRemoved){
+        var count=0
         for g in groups{
             for t in g{
                 tiles[t.row][t.col]=(tf!.getRandomTileFor(r: t.row, c: t.col))
@@ -247,7 +266,7 @@ class Board{
                 tiles[t.row][t.col].node.zPosition = -1
                 let grow=SKAction.scale(by: 10, duration: 0.5)
                 gs.addChild(tiles[t.row][t.col].node)
-                tiles[t.row][t.col].node.run(grow)
+                tiles[t.row][t.col].node.run(grow,completion: {count+=1;completionHandler(count)})
             }
         }
         groups.removeAll()
@@ -310,6 +329,6 @@ class Board{
         }
         ax=ax/Double(of.count)
         ay=ay/Double(of.count)
-        return CGPoint(x: Double(ax), y: Double(ay))
+        return CGPoint(x: Double(ax+Double.random(in: -30...30)), y: Double(ay+Double.random(in: -30...30)))
     }
 }

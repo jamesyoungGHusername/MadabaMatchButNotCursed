@@ -84,9 +84,9 @@ class Tile{
         case .orange:
             return UIColor.systemOrange
         case .pink:
-            return UIColor.systemPink
+            return UIColor.systemTeal
         case .brown:
-            return UIColor.systemBrown
+            return UIColor.green
         case .magenta:
             return UIColor.magenta
         }
