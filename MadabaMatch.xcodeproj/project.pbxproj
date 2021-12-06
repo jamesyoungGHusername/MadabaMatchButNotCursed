@@ -41,7 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C43410AC275D71B2003D6259 /* MadabaMatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MadabaMatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C43410AC275D71B2003D6259 /* Madaba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Madaba.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C43410AF275D71B2003D6259 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C43410B1275D71B2003D6259 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		C43410B3275D71B2003D6259 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -98,7 +98,7 @@
 		C43410AD275D71B2003D6259 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C43410AC275D71B2003D6259 /* MadabaMatch.app */,
+				C43410AC275D71B2003D6259 /* Madaba.app */,
 				C43410C5275D71B4003D6259 /* MadabaMatchTests.xctest */,
 				C43410CF275D71B4003D6259 /* MadabaMatchUITests.xctest */,
 			);
@@ -165,7 +165,7 @@
 			);
 			name = MadabaMatch;
 			productName = MadabaMatch;
-			productReference = C43410AC275D71B2003D6259 /* MadabaMatch.app */;
+			productReference = C43410AC275D71B2003D6259 /* Madaba.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C43410C4275D71B4003D6259 /* MadabaMatchTests */ = {
@@ -478,8 +478,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.madScience.MadabaMatch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.madScience.MadabaButIHadToStartOver;
+				PRODUCT_NAME = Madaba;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -506,8 +506,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.madScience.MadabaMatch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.madScience.MadabaButIHadToStartOver;
+				PRODUCT_NAME = Madaba;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

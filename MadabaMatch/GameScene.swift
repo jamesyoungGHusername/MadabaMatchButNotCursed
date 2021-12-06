@@ -11,12 +11,14 @@ import GameplayKit
 class GameScene: SKScene {
     
     var board:Board?
-    
+    var scoreLabel:SKLabelNode?
+    var comboLabel:SKLabelNode?
     override func didMove(to view: SKView) {
         
-        board=Board.init(w: self.size.width/1.3, h: self.size.width/1.3,r:5,c:5,gs:self)
+        board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:10,c:6,gs:self)
         // Get label node from scene and store it for use later
         board!.populate()
+        
         self.addChild(board!.sn)
         for r in board!.tiles{
             for t in r{
@@ -24,6 +26,16 @@ class GameScene: SKScene {
                 t.updatePosition(animated: false, 0)
             }
         }
+        scoreLabel=SKLabelNode(text:"SCORE: \(board!.score)")
+        scoreLabel!.fontName="AvenirNext-Bold"
+        scoreLabel!.color=UIColor.link
+        scoreLabel!.position=CGPoint(x: 0, y: -board!.h/1.75)
+        comboLabel=SKLabelNode(text:"MAX COMBO: \(board!.maxCombo)")
+        comboLabel!.fontName="AvenirNext-Bold"
+        comboLabel!.color=UIColor.link
+        comboLabel!.position=CGPoint(x: 0, y: board!.h/2+2)
+        self.addChild(scoreLabel!)
+        self.addChild(comboLabel!)
         // Create shape node to use during mouse interaction
 
         
@@ -69,7 +81,10 @@ class GameScene: SKScene {
                 animating=true
             }
         }
+        scoreLabel!.text="SCORE: \(board!.score)"
+        comboLabel!.text="MAX COMBO: \(board!.maxCombo)"
         if !animating{
+            
             //board!.advanceTurn()
         }
     }

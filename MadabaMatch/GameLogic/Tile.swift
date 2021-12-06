@@ -62,7 +62,8 @@ class Tile{
         if animated{
             animating=true
             let action=SKAction.move(to: position, duration: duration)
-            self.node.run(action,completion: {self.animating=false})
+            self.node.zPosition=2
+            self.node.run(action,completion: {self.animating=false;self.node.zPosition=0})
             
         }else{
             self.node.position=self.position

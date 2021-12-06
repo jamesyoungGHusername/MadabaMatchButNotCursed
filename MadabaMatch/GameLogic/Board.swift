@@ -108,6 +108,10 @@ class Board{
         calculateScore()
         removeGroups()
         repopulateBoard()
+        highlightGroups()
+        if(!groups.isEmpty){
+            advanceTurn()
+        }
     }
     var score:Int=0
     var maxCombo:Int=0
@@ -119,7 +123,7 @@ class Board{
                 //t.updatePosition(animated: true, 0.1)
                 if !t.grouped{
                     floodFill(rPos: t.row, cPos: t.col, target: t.color)
-                    print(group.count)
+                    //print(group.count)
                     if(group.count>=4){
                         let g=group
                         groups.append(g)
@@ -142,12 +146,20 @@ class Board{
         
     }
     func calculateScore(){
+        var turnScore=0
+        var groupScore=0
         for g in groups{
-            if g.count>maxCombo{
-                maxCombo=g.count
+            groupScore=(g.count-3)*g.count
+            if turnScore==0{
+                turnScore=groupScore
+            }else{
+                turnScore+=turnScore*groupScore
             }
-            score+=(g.count-3)*g.count
         }
+        if turnScore>maxCombo{
+            maxCombo=turnScore
+        }
+        score+=turnScore
     }
     func removeGroups(){
         for g in groups{
@@ -158,11 +170,11 @@ class Board{
         for r in tiles{
             for t in r{
                     if(emptyBelow(r: t.row, c: t.col)){
-                        print("the \(tiles[t.row][t.col].color) at \(t.row),\(t.col) can move")
+                        //print("the \(tiles[t.row][t.col].color) at \(t.row),\(t.col) can move")
                         moveDown(tile: t, move: 0)
                         
                     }else{
-                        print("the \(tiles[t.row][t.col].color) at \(t.row),\(t.col) can NOT move")
+                        //print("the \(tiles[t.row][t.col].color) at \(t.row),\(t.col) can NOT move")
                     }
             }
         }
@@ -178,7 +190,9 @@ class Board{
             tile.switchPosition(with: tiles[tile.row-1][tile.col])
             //print("new position is \(tiles[tile.row][tile.col].position)")
             switchIndices(r1: tile.row, c1: tile.col, r2: tile.row-1, c2: tile.col)
-            tile.updatePosition(animated: true, 0.1)
+            tile.node.zPosition=3
+            tile.updatePosition(animated: true, 0.2)
+            
             //print("tile moved to \(tile.row),\(tile.col)")
             if(emptyBelow(r: tile.row, c: tile.col)){
                 moveDown(tile: tile,move: move+1)
@@ -189,22 +203,34 @@ class Board{
     }
     func emptyBelow(r:Int,c:Int)->Bool{
         if(tiles[r][c].finalGrouped){
-            print("tile is being removed")
+            //print("tile is being removed")
             return false
         }
         if(r-1<0){
-            print("tile checked is on the bottom of the screen")
+            //print("tile checked is on the bottom of the screen")
             return false
         }
         if(!tiles[r-1][c].finalGrouped){
-            print("tile present below")
+            //print("tile present below")
             return false
         }else{
             return true
         }
     }
     func repopulateBoard(){
-        
+        for g in groups{
+            for t in g{
+                tiles[t.row][t.col]=(tf!.getRandomTileFor(r: t.row, c: t.col))
+                let shrink=SKAction.scale(by: 0.1, duration: 0)
+                tiles[t.row][t.col].node.run(shrink)
+                tiles[t.row][t.col].updatePosition(animated: false, 0)
+                tiles[t.row][t.col].node.zPosition = -1
+                let grow=SKAction.scale(by: 10, duration: 0.5)
+                gs.addChild(tiles[t.row][t.col].node)
+                tiles[t.row][t.col].node.run(grow)
+            }
+        }
+        groups.removeAll()
     }
     func floodFill(rPos:Int,cPos:Int,target:TileColor){
        // print("Checking for \(target) group at \(rPos),\(cPos)")
