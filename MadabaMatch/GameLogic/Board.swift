@@ -47,7 +47,7 @@ class Board{
         if !tileSelected{
             for r in tiles{
                 for t in r{
-                    if t.node.contains(touch.location(in: gs)){
+                    if t.node.contains(touch.location(in: gs)) && t.moves>0{
                         t.selected=true
                         t.node.zPosition=3
                         selectedTile=t
@@ -70,7 +70,24 @@ class Board{
                             switchIndices(r1: t.row, c1: t.col, r2: selectedTile!.row, c2: selectedTile!.col)
                             t.switchPosition(with: selectedTile!)
                             t.updatePosition(animated: true, 0.1)
-                            selectedTile!.timesMoved+=1
+                            selectedTile!.moves-=1
+                            selectedTile!.moveLabel.text="\(selectedTile!.moves)"
+                            if(selectedTile!.moves<=0){
+                                selectedTile!.moveLabel.text=""
+                                if tileSelected{
+                                    selectedTile?.selected=false
+                                    selectedTile?.node.zPosition=0
+                                    tileSelected=false
+                                    selectedTile=nil
+                                    for r in tiles{
+                                        for t in r{
+                                            t.updatePosition(animated: true, 0.1)
+                                            
+                                        }
+                                    }
+                                    advanceTurn()
+                                }
+                            }
                             movesRemaining-=1
                         }
                     }

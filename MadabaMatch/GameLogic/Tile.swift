@@ -17,7 +17,8 @@ class Tile{
     var color:TileColor
     var selected=false
     var animating=false
-    var timesMoved=0
+    var moves=0
+    var moveLabel=SKLabelNode(text: "")
     var grouped=false
     var finalGrouped=false
     init(row:Int,col:Int,w:Double,h:Double,position:CGPoint,node:SKShapeNode,color:TileColor){
@@ -29,7 +30,18 @@ class Tile{
         self.node=node
         self.node.position=self.position
         self.color=color
+        self.moves=Int.random(in: 0...5)
         self.node.fillColor=getColor()
+        self.moveLabel.verticalAlignmentMode = .center
+        if(moves != 0){
+            self.moveLabel.text="\(moves)"
+        }else{
+            self.moveLabel.text=""
+        }
+        
+        self.moveLabel.fontColor=UIColor.black
+        self.moveLabel.fontName="AvenirNext-Bold"
+        node.addChild(moveLabel)
     }
     convenience init(copy:Tile) {
         self.init(row: copy.row, col: copy.col, w: copy.w, h: copy.h, position: copy.position, node: copy.node, color: copy.color)
@@ -45,6 +57,7 @@ class Tile{
             let ph=tile.position
             tile.position=self.position
             self.position=ph
+            
         }
     }
     func updatePosition(animated:Bool,_ duration:Double){

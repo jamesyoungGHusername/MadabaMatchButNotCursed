@@ -10,10 +10,15 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-    var board:Board?
-    var scoreLabel:SKLabelNode?
-    var comboLabel:SKLabelNode?
-    var movesRemaining:SKLabelNode?
+    var board:Board!
+    var scoreLabel:SKLabelNode!
+    var comboLabel:SKLabelNode!
+    var movesRemaining:SKLabelNode!
+    
+    var backButton:SKNode!
+    var bText:SKLabelNode!
+    var bBox:SKShapeNode!
+    
     override func didMove(to view: SKView) {
         
         board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:10,c:6,gs:self)
@@ -37,15 +42,26 @@ class GameScene: SKScene {
         comboLabel!.position=CGPoint(x: 0, y: -board!.h/1.75)
         self.addChild(scoreLabel!)
         self.addChild(comboLabel!)
-        movesRemaining=SKLabelNode(text:"\(board!.movesRemaining)")
+        movesRemaining=SKLabelNode(text:"")
         movesRemaining!.fontName="AvenirNext-Bold"
         movesRemaining!.fontSize=60
         movesRemaining!.color=UIColor.link
         movesRemaining!.position=CGPoint(x: 0, y: board!.h/1.8+2)
         self.addChild(movesRemaining!)
         // Create shape node to use during mouse interaction
-
-        
+        bBox=SKShapeNode(rectOf: CGSize(width: 100, height: 30),cornerRadius: 10)
+        bBox?.fillColor=UIColor.systemGray2
+        bText=SKLabelNode(text: "Back")
+        bText!.fontName="AvenirNext-Bold"
+        bText!.fontSize=30
+        bText!.fontColor=UIColor.white
+        bText!.zPosition=1
+        bText!.verticalAlignmentMode = .center
+        backButton=SKNode()
+        backButton?.addChild(bBox!)
+        backButton?.addChild(bText!)
+        backButton?.position=CGPoint(x: -self.size.width/2+51, y: self.size.height/2-16)
+        self.addChild(backButton!)
     }
     
     
@@ -63,12 +79,21 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
+        if backButton!.contains(touch!.location(in: self)){
+            print("back tapped")
+            let transition=SKTransition.moveIn(with: .left, duration: 0.2)
+            let scene = SKScene(fileNamed: "MainMenu")!
+            self.view?.presentScene(scene,transition: transition)
+        }
         board!.touchDown(touch: touch!)
+        movesRemaining!.zPosition=2
+        movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
         board!.touchMoved(touch: touch!)
+        movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -90,7 +115,11 @@ class GameScene: SKScene {
         }
         scoreLabel!.text="SCORE: \(board!.score)/250"
         comboLabel!.text="MAX COMBO: \(board!.maxCombo)"
-        movesRemaining!.text="\(board!.movesRemaining)"
+        if(board!.tileSelected){
+            movesRemaining!.text="\(board!.selectedTile!.moves)"
+        }else{
+            movesRemaining!.text=""
+        }
         if !animating{
             
             //board!.advanceTurn()
