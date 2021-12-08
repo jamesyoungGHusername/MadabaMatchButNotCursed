@@ -22,6 +22,7 @@ class Board{
     var movesRemaining=50
     var targetScore=500
     var lastTouch:UITouch?
+    var turn=0
     init(w:Double,h:Double,r:Int,c:Int,gs:GameScene){
         self.w=w
         self.h=h
@@ -71,6 +72,7 @@ class Board{
                             t.switchPosition(with: selectedTile!)
                             t.updatePosition(animated: true, 0.1)
                             selectedTile!.moves-=1
+                            moved=true
                             selectedTile!.moveLabel.text="\(selectedTile!.moves)"
                             if(selectedTile!.moves<=0){
                                 selectedTile!.moveLabel.text=""
@@ -107,8 +109,18 @@ class Board{
         tiles[r2][c2].row=r2
         tiles[r2][c2].col=c2
     }
-    
+    var moved=false
     func touchUp(touch:UITouch){
+        for g in tiles{
+            for t in g{
+                if(moved && t.moves>0){
+                    turn+=1
+                    t.moves-=1
+                    t.moveLabel.text="\(t.moves)"
+                }
+            }
+        }
+        moved=false
         if tileSelected{
             selectedTile?.selected=false
             selectedTile?.node.zPosition=0

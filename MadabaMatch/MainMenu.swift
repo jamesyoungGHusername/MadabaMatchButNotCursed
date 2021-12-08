@@ -14,6 +14,7 @@ class MainMenu:SKScene{
     var buttonBackground:SKShapeNode!
     var buttonText:SKLabelNode!
     var button:SKNode!
+    var gm:SKLabelNode!
     override func didMove(to view: SKView) {
         titleLabel=SKLabelNode(text: "Madaba Match")
         titleLabel!.fontName="AvenirNext-Bold"
@@ -24,6 +25,7 @@ class MainMenu:SKScene{
         titleShadow!.fontColor=UIColor.systemGray2
         titleLabel!.position=CGPoint(x: 0, y:self.size.height/3 )
         titleShadow!.position=CGPoint(x: 2, y:self.size.height/3-2)
+        let step=self.size.height/3-self.size.height/4
         titleShadow!.zPosition = -1
         titleNode=SKNode()
         titleNode!.addChild(titleShadow!)
@@ -31,7 +33,7 @@ class MainMenu:SKScene{
         self.addChild(titleNode!)
         buttonBackground=SKShapeNode(rectOf: CGSize(width: 150, height: 50),cornerRadius: 10)
         buttonBackground?.fillColor=UIColor.systemGray4
-        buttonText=SKLabelNode(text: "Tile Limit")
+        buttonText=SKLabelNode(text: "SURVIVE")
         buttonText!.fontName="AvenirNext-Bold"
         buttonText!.fontSize=15
         buttonText!.zPosition=1
@@ -39,8 +41,14 @@ class MainMenu:SKScene{
         button=SKNode()
         button!.addChild(buttonBackground!)
         button!.addChild(buttonText!)
+        button.position=CGPoint(x: 0, y:self.size.height/4-step )
         self.addChild(button!)
         self.backgroundColor=UIColor.black
+        gm=SKLabelNode(text: "Game Mode:")
+        gm.fontSize=30
+        gm.fontColor=UIColor.white
+        gm.position=CGPoint(x: 0, y:self.size.height/4 )
+        self.addChild(gm)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

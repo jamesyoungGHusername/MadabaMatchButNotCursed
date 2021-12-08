@@ -30,7 +30,7 @@ class Tile{
         self.node=node
         self.node.position=self.position
         self.color=color
-        self.moves=Int.random(in: 0...5)
+        self.moves=20 //Int.random(in: 0...5)
         self.node.fillColor=getColor()
         self.moveLabel.verticalAlignmentMode = .center
         if(moves != 0){
@@ -40,6 +40,7 @@ class Tile{
         }
         
         self.moveLabel.fontColor=UIColor.black
+        self.moveLabel.fontSize=20
         self.moveLabel.fontName="AvenirNext-Bold"
         node.addChild(moveLabel)
     }
@@ -61,6 +62,7 @@ class Tile{
         }
     }
     func updatePosition(animated:Bool,_ duration:Double){
+
         if selected{
             node.lineWidth=5
             node.strokeColor=UIColor.white

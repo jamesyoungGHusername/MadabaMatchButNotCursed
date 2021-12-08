@@ -32,7 +32,7 @@ class GameScene: SKScene {
                 t.updatePosition(animated: false, 0)
             }
         }
-        scoreLabel=SKLabelNode(text:"SCORE: \(board!.score)/250")
+        scoreLabel=SKLabelNode(text:"Turn \(board!.turn+1)")
         scoreLabel!.fontName="AvenirNext-Bold"
         scoreLabel!.color=UIColor.link
         scoreLabel!.position=CGPoint(x: 0, y: board!.h/2+2)
@@ -113,8 +113,8 @@ class GameScene: SKScene {
                 animating=true
             }
         }
-        scoreLabel!.text="SCORE: \(board!.score)/250"
-        comboLabel!.text="MAX COMBO: \(board!.maxCombo)"
+        scoreLabel!.text="Turn \(board!.turn+1)"
+        comboLabel!.text="SCORE: \(board!.score)/250"
         if(board!.tileSelected){
             movesRemaining!.text="\(board!.selectedTile!.moves)"
         }else{
