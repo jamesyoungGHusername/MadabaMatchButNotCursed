@@ -114,12 +114,13 @@ class Board{
         for g in tiles{
             for t in g{
                 if(moved && t.moves>0){
-                    turn+=1
+                    
                     t.moves-=1
                     t.moveLabel.text="\(t.moves)"
                 }
             }
         }
+        turn+=1
         moved=false
         if tileSelected{
             selectedTile?.selected=false
