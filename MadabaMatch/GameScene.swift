@@ -14,14 +14,22 @@ class GameScene: SKScene {
     var scoreLabel:SKLabelNode!
     var comboLabel:SKLabelNode!
     var movesRemaining:SKLabelNode!
-    
+    var level:Int!
+    var startMessage:String!
+    var turnGoal:Int!
+    var boardRows:Int!
+    var boardCols:Int!
     var backButton:SKNode!
     var bText:SKLabelNode!
     var bBox:SKShapeNode!
-    
+    var openingMsg:GameMessage!
+    var started:Bool!
+    var colorsPresent:Int!
+    var readyForNext:Bool=false
     override func didMove(to view: SKView) {
-        
-        board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:10,c:6,gs:self)
+        self.addChild(openingMsg!.getNode())
+        openingMsg.getNode().zPosition=10
+        board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:boardRows,c:boardCols,gs:self)
         // Get label node from scene and store it for use later
         board!.populate()
         
@@ -78,18 +86,29 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch=touches.first
-        if backButton!.contains(touch!.location(in: self)){
-            print("back tapped")
-            let transition=SKTransition.moveIn(with: .left, duration: 0.2)
-            let scene = SKScene(fileNamed: "MainMenu")!
-            self.view?.presentScene(scene,transition: transition)
+        if readyForNext{
+            let transition=SKTransition.moveIn(with: .right, duration: 0.2)
+            let nextScene = SKScene(fileNamed: "GameScene") as! GameScene
+            nextScene.setup(level: level+1, message: "Level \(level+1): Survive \(turnGoal+1) turns", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4)
+            self.view?.presentScene(nextScene,transition: transition)
         }
-        if(!board!.gameOver){
-            board!.touchDown(touch: touch!)
-            movesRemaining!.zPosition=2
+        if(started){
+            let touch=touches.first
+            if backButton!.contains(touch!.location(in: self)){
+                print("back tapped")
+                let transition=SKTransition.moveIn(with: .left, duration: 0.2)
+                let scene = SKScene(fileNamed: "MainMenu")!
+                self.view?.presentScene(scene,transition: transition)
+            }
+            if(!board!.gameOver){
+                board!.touchDown(touch: touch!)
+                movesRemaining!.zPosition=2
+            }
+            //movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
+        }else{
+            started=true
+            openingMsg.getNode().removeFromParent()
         }
-        //movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -101,6 +120,17 @@ class GameScene: SKScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
         board!.touchUp(touch: touch!)
+        if(board!.turn+1==turnGoal && !board!.gameOver){
+            movesRemaining!.removeFromParent()
+            let winningMessage=GameMessage(message: "GREAT!", position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2-10, height: self.size.height/10))
+            let invis=SKAction.fadeOut(withDuration: 0)
+            let reveal=SKAction.fadeIn(withDuration: 0.3)
+            winningMessage.getNode().run(invis)
+            self.addChild(winningMessage.getNode())
+            winningMessage.getNode().zPosition=11
+            winningMessage.getNode().run(reveal)
+            readyForNext=true
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -115,11 +145,15 @@ class GameScene: SKScene {
                 animating=true
             }
         }
-        scoreLabel!.text="Turn \(board!.turn+1)"
+        scoreLabel!.text="Turn \(board!.turn+1)/\(turnGoal!)"
+        if(board!.turn+1==turnGoal){
+            board!.gameOver=true
+        }
         comboLabel!.text="SCORE: \(board!.score)/250"
+        
         if(board!.gameOver){
             movesRemaining!.position=CGPoint(x: 0, y: 0)
-            movesRemaining!.zPosition=5
+            movesRemaining!.zPosition=20
             movesRemaining!.text="GAME OVER"
         }else{
             movesRemaining!.text=""
@@ -128,6 +162,16 @@ class GameScene: SKScene {
             
             //board!.advanceTurn()
         }
+    }
+    public func setup(level:Int,message:String,bR:Int,bC:Int,turnGoal:Int,colorsPresent:Int){
+        self.started=false
+        self.level=level
+        self.startMessage=message
+        self.turnGoal=turnGoal
+        boardRows=bR
+        boardCols=bC
+        openingMsg=GameMessage(message: message, position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2-10, height: self.size.height/10))
+        self.colorsPresent=colorsPresent
     }
     func getPointLabel(at:CGPoint,points:Int)->SKNode{
         let score=SKLabelNode(text:"\(points) POINTS")

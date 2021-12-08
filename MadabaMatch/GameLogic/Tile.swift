@@ -74,23 +74,32 @@ class Tile{
         }
     }
     func updatePosition(animated:Bool,_ duration:Double){
-
+        if(moves != 0){
+            self.moveLabel.text="\(moves)"
+            self.moveShadow.text="\(moves)"
+        }else{
+            self.moveLabel.text="X"
+            self.moveShadow.text="X"
+        }
         if selected{
             node.lineWidth=5
             node.strokeColor=UIColor.white
+        }else if moves<=5{
+            node.lineWidth=5
+            node.strokeColor=UIColor.red
+            self.moveLabel.color=UIColor.red
         }else{
             node.lineWidth=3
             node.strokeColor=UIColor.black
         }
-        if finalGrouped{
-            node.lineWidth=5
-            node.strokeColor=UIColor.blue
-        }
+        
         if animated{
             animating=true
             let action=SKAction.move(to: position, duration: duration)
-            self.node.zPosition=2
-            self.node.run(action,completion: {self.animating=false;self.node.zPosition=0})
+            if(moves>5){
+                self.node.zPosition=2
+            }
+            self.node.run(action,completion: {self.animating=false;if self.moves>5{self.node.zPosition=0}})
             
         }else{
             self.node.position=self.position

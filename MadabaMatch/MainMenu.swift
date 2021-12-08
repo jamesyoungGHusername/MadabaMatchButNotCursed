@@ -15,6 +15,7 @@ class MainMenu:SKScene{
     var buttonText:SKLabelNode!
     var button:SKNode!
     var gm:SKLabelNode!
+    var scene1:GameScene!
     override func didMove(to view: SKView) {
         titleLabel=SKLabelNode(text: "Madaba Match")
         titleLabel!.fontName="AvenirNext-Bold"
@@ -49,6 +50,7 @@ class MainMenu:SKScene{
         gm.fontColor=UIColor.white
         gm.position=CGPoint(x: 0, y:self.size.height/4 )
         self.addChild(gm)
+       
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -56,8 +58,9 @@ class MainMenu:SKScene{
         if button!.contains(touch!.location(in: self)){
             print("Start tapped")
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
-            let scene = SKScene(fileNamed: "GameScene")!
-            self.view?.presentScene(scene,transition: transition)
+            scene1 = SKScene(fileNamed: "GameScene") as? GameScene
+            scene1.setup(level: 1, message: "Level 1: Survive 6 turns", bR: 10, bC: 6, turnGoal: 6,colorsPresent:4)
+            self.view?.presentScene(scene1,transition: transition)
                
         }
     }

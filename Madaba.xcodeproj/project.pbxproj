@@ -26,6 +26,7 @@
 		C43410EF27600F08003D6259 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410EE27600F08003D6259 /* MenuButton.swift */; };
 		C43410F127601E68003D6259 /* LoadingScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C43410F027601E68003D6259 /* LoadingScene.sks */; };
 		C43410F327601E7F003D6259 /* LoadingScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410F227601E7F003D6259 /* LoadingScene.swift */; };
+		C43410F527614BDE003D6259 /* GameMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43410F427614BDE003D6259 /* GameMessage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		C43410EE27600F08003D6259 /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		C43410F027601E68003D6259 /* LoadingScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LoadingScene.sks; sourceTree = "<group>"; };
 		C43410F227601E7F003D6259 /* LoadingScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScene.swift; sourceTree = "<group>"; };
+		C43410F427614BDE003D6259 /* GameMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMessage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 				C43410E3275D75EC003D6259 /* Board.swift */,
 				C43410E5275D75F6003D6259 /* Tile.swift */,
 				C43410E7275D760C003D6259 /* TileFactory.swift */,
+				C43410F427614BDE003D6259 /* GameMessage.swift */,
 			);
 			path = GameLogic;
 			sourceTree = "<group>";
@@ -313,6 +316,7 @@
 				C43410E6275D75F6003D6259 /* Tile.swift in Sources */,
 				C43410EF27600F08003D6259 /* MenuButton.swift in Sources */,
 				C43410E4275D75EC003D6259 /* Board.swift in Sources */,
+				C43410F527614BDE003D6259 /* GameMessage.swift in Sources */,
 				C43410E8275D760C003D6259 /* TileFactory.swift in Sources */,
 				C43410B0275D71B2003D6259 /* AppDelegate.swift in Sources */,
 			);
@@ -492,7 +496,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = XCBTW98MC4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -520,7 +524,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = XCBTW98MC4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

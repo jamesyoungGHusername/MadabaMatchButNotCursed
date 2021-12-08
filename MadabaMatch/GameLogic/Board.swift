@@ -33,6 +33,7 @@ class Board{
     var lastTouch:UITouch?
     var turn=0
     var gameOver=false
+    
     init(w:Double,h:Double,r:Int,c:Int,gs:GameScene){
         self.w=w
         self.h=h
@@ -43,14 +44,15 @@ class Board{
         self.gs=gs
     }
     func populate(){
-        self.tf=TileFactory(for:self)
+        self.tf=TileFactory(for:self,gs.colorsPresent)
         for i in 0..<r{
             for j in 0..<c{
-                tiles[i].append(tf!.getRandomTileFor(r: i, c: j))
+                tiles[i].append(tf!.getRandomSurvivalTileFor(r: i, c: j))
                 tiles[i][j].updatePosition(animated: false, 0)
             }
         }
-        print(tiles)
+        bringRedToFront()
+
     }
     
     func touchDown(touch:UITouch){
@@ -123,13 +125,15 @@ class Board{
         for g in tiles{
             for t in g{
                 if(moved && t.moves>0){
+                    t.node.zPosition=0
                     t.moves-=1
                     t.moveLabel.text="\(t.moves)"
                     t.moveShadow.text="\(t.moves)"
                     if(t.moves<=0){
                         gameOver=true
                     }else if t.moves<=5{
-                        t.moveLabel.fontColor=UIColor.red
+                        t.node.zPosition=10
+                        t.moveShadow.color=UIColor.red
                     }
                     
                 }
@@ -151,6 +155,28 @@ class Board{
                 }
             }
             advanceTurn()
+            bringRedToFront()
+        }
+    }
+    func bringRedToFront(){
+        for tile in tiles {
+            for t in tile{
+                if t.moves<=5{
+                    t.node.zPosition=5
+                    
+                }else{
+                    t.node.zPosition = 2
+                }
+            }
+        }
+    }
+    func wiggleRed(){
+        for tile in tiles {
+            for t in tile{
+                if t.moves<=5{
+                    t.node.run(wiggle(times: 5-t.moves))
+                }
+            }
         }
     }
     func advanceTurn(){
@@ -168,9 +194,11 @@ class Board{
                             self.highlightGroups()
                             if(!self.groups.isEmpty){
                                 self.groups.removeAll()
+                                self.bringRedToFront()
                                 self.advanceTurn()
                             }else{
                                 self.combo=0
+                                
                             }
                         }
                     })
@@ -178,7 +206,8 @@ class Board{
                 }
             })
         }
-        
+        bringRedToFront()
+        wiggleRed()
     }
     typealias GroupsRemoved = (_ progress:Int)->Void
     var score:Int=0
@@ -211,10 +240,12 @@ class Board{
                 t.updatePosition(animated: false, 0)
             }
         }
+        bringRedToFront()
         
     }
     var combo:Int = -1
     func calculateScore(g:[Tile]){
+        
         print("calculating score for group of \(g.count)")
         var groupScore=0
         let comboLabel=gs.getComboLabel(at: averagePosition(of: g), type: getCombo(i: combo))
@@ -225,6 +256,7 @@ class Board{
         let sequence=SKAction.sequence([wait,fadeIn,fadeOut])
         let pointSeq=SKAction.sequence([fadeIn,fadeOut])
         gs.addChild(comboLabel)
+        comboLabel.zPosition=10
         comboLabel.run(shift)
         comboLabel.run(sequence,completion:{comboLabel.removeFromParent()})
         groupScore=(g.count-3)*g.count*combo
@@ -233,10 +265,12 @@ class Board{
         }
         let pointLabel=gs.getPointLabel(at: CGPoint(x:averagePosition(of: g).x,y: averagePosition(of: g).y-tf!.tileHeight/2), points: groupScore)
         gs.addChild(pointLabel)
+        pointLabel.zPosition=10
         pointLabel.run(shift)
         pointLabel.run(pointSeq,completion:{pointLabel.removeFromParent()})
         score+=groupScore
         print("combo of \(combo)")
+        
     }
     func removeGroups(completionHandler: @escaping GroupsRemoved){
         let rotate=SKAction.rotate(byAngle: 540, duration: 0.3)
@@ -264,7 +298,23 @@ class Board{
                     }
             }
         }
+        bringRedToFront()
     }
+    func wiggle(times:Int)->SKAction{
+        let wiggleLeft1=SKAction.rotate(byAngle: 0.1, duration: 0.1)
+        let wiggleLeft2=SKAction.rotate(byAngle: 0.2, duration: 0.2)
+        let wiggleRight=SKAction.rotate(byAngle: -0.2, duration: 0.2)
+        let wiggleRight2=SKAction.rotate(byAngle: -0.1, duration: 0.2)
+        var seq:[SKAction]=[wiggleLeft1]
+        for _ in 0..<times{
+            seq.append(wiggleRight)
+            seq.append(wiggleLeft2)
+        }
+        seq.append(wiggleRight2)
+        return SKAction.sequence(seq)
+    }
+    
+    
     func moveDown(tile:Tile,move:Int){
         
         if(emptyBelow(r: tile.row, c: tile.col)){
@@ -306,7 +356,7 @@ class Board{
         var count=0
         for g in groups{
             for t in g{
-                tiles[t.row][t.col]=(tf!.getRandomTileFor(r: t.row, c: t.col))
+                tiles[t.row][t.col]=(tf!.getRandomSurvivalTileFor(r: t.row, c: t.col))
                 let shrink=SKAction.scale(by: 0.1, duration: 0)
                 tiles[t.row][t.col].node.run(shrink)
                 tiles[t.row][t.col].updatePosition(animated: false, 0)
