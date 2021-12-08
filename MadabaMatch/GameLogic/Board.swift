@@ -208,6 +208,9 @@ class Board{
         }
         bringRedToFront()
         wiggleRed()
+        if(turn==gs.turnGoal && !gameOver){
+            gs.readyForNext=true
+        }
     }
     typealias GroupsRemoved = (_ progress:Int)->Void
     var score:Int=0

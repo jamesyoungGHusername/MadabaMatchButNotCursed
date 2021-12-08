@@ -17,8 +17,12 @@ class GameMessage{
         self.text.fontName="AvenirNext-Bold"
         self.text.fontSize=20
         self.text.verticalAlignmentMode = .center
+        
         self.box=SKShapeNode(rectOf: size, cornerRadius: 5)
         self.box.fillColor=UIColor.black
+        self.text.preferredMaxLayoutWidth=self.box.frame.size.width/2
+        self.text.numberOfLines=2
+        self.text.lineBreakMode = .byWordWrapping
         self.box.strokeColor=UIColor.white
         self.box.lineWidth=5
         self.node=SKNode()

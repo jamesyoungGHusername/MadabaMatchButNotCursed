@@ -31,7 +31,7 @@ class TileFactory{
     func getRandomSurvivalTileFor(r:Int,c:Int)->Tile{
         let node=SKShapeNode(rectOf: CGSize(width: tileWidth, height: tileHeight))
         let t=Tile.init(row: r, col: c, w: tileWidth-2, h: tileHeight-2, position: getBoardPositionFrom(r: r, c: c), node: node, color: getRandomColor())
-        t.moves=Int.random(in: 5...15)
+        t.moves=Int.random(in: 6...15)
         return t
     }
     func getBoardPositionFrom(r:Int,c:Int)->CGPoint{

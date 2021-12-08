@@ -32,7 +32,7 @@ class GameScene: SKScene {
         board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:boardRows,c:boardCols,gs:self)
         // Get label node from scene and store it for use later
         board!.populate()
-        
+        board!.score=sessionScore
         self.addChild(board!.sn)
         for r in board!.tiles{
             for t in r{
@@ -40,6 +40,11 @@ class GameScene: SKScene {
                 t.updatePosition(animated: false, 0)
             }
         }
+        winningMessage=GameMessage(message: "YOU WIN", position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2, height: self.size.height/10))
+        let invis=SKAction.fadeOut(withDuration: 0)
+        
+        winningMessage.getNode().run(invis)
+        self.addChild(winningMessage.getNode())
         scoreLabel=SKLabelNode(text:"Turn \(board!.turn+1)")
         scoreLabel!.fontName="AvenirNext-Bold"
         scoreLabel!.color=UIColor.link
@@ -86,10 +91,10 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if readyForNext{
+        if readyForNext {
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let nextScene = SKScene(fileNamed: "GameScene") as! GameScene
-            nextScene.setup(level: level+1, message: "Level \(level+1): Survive \(turnGoal+1) turns", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4)
+            nextScene.setup(level: level+1, message: "Level \(level+1)", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4,score: board!.score)
             self.view?.presentScene(nextScene,transition: transition)
         }
         if(started){
@@ -120,24 +125,14 @@ class GameScene: SKScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
         board!.touchUp(touch: touch!)
-        if(board!.turn+1==turnGoal && !board!.gameOver){
-            movesRemaining!.removeFromParent()
-            let winningMessage=GameMessage(message: "GREAT!", position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2-10, height: self.size.height/10))
-            let invis=SKAction.fadeOut(withDuration: 0)
-            let reveal=SKAction.fadeIn(withDuration: 0.3)
-            winningMessage.getNode().run(invis)
-            self.addChild(winningMessage.getNode())
-            winningMessage.getNode().zPosition=11
-            winningMessage.getNode().run(reveal)
-            readyForNext=true
-        }
+        
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
-    
+    var winningMessage:GameMessage!
     override func update(_ currentTime: TimeInterval) {
         var animating=false
         for c in self.children{
@@ -145,25 +140,39 @@ class GameScene: SKScene {
                 animating=true
             }
         }
-        scoreLabel!.text="Turn \(board!.turn+1)/\(turnGoal!)"
-        if(board!.turn+1==turnGoal){
+        scoreLabel!.text="Turn \(board!.turn)/\(turnGoal!)"
+        if(board!.turn==turnGoal){
             board!.gameOver=true
         }
-        comboLabel!.text="SCORE: \(board!.score)/250"
+        comboLabel!.text="SCORE: \(board!.score)"
         
-        if(board!.gameOver){
+        if(board!.gameOver && !readyForNext){
             movesRemaining!.position=CGPoint(x: 0, y: 0)
             movesRemaining!.zPosition=20
             movesRemaining!.text="GAME OVER"
+            comboLabel!.position=CGPoint(x: 0, y: -50)
+            comboLabel!.zPosition=20
+            comboLabel!.fontSize=25
+            comboLabel!.text="FINAL SCORE: \(board!.score)"
         }else{
-            movesRemaining!.text=""
+            movesRemaining!.fontSize=30
+            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-35)
+            movesRemaining!.zPosition=20
+            movesRemaining!.text="Level \(level!)"
+        }
+        if(readyForNext){
+            movesRemaining!.removeFromParent()
+            let reveal=SKAction.fadeIn(withDuration: 0.3)
+            winningMessage.getNode().zPosition=11
+            winningMessage.getNode().run(reveal)
         }
         if !animating{
             
             //board!.advanceTurn()
         }
     }
-    public func setup(level:Int,message:String,bR:Int,bC:Int,turnGoal:Int,colorsPresent:Int){
+    var sessionScore=0
+    public func setup(level:Int,message:String,bR:Int,bC:Int,turnGoal:Int,colorsPresent:Int,score:Int){
         self.started=false
         self.level=level
         self.startMessage=message
@@ -172,6 +181,7 @@ class GameScene: SKScene {
         boardCols=bC
         openingMsg=GameMessage(message: message, position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2-10, height: self.size.height/10))
         self.colorsPresent=colorsPresent
+        self.sessionScore=score
     }
     func getPointLabel(at:CGPoint,points:Int)->SKNode{
         let score=SKLabelNode(text:"\(points) POINTS")
