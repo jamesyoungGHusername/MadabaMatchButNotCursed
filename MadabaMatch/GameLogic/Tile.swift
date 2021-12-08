@@ -19,6 +19,8 @@ class Tile{
     var animating=false
     var moves=0
     var moveLabel=SKLabelNode(text: "")
+    var moveShadow=SKLabelNode(text: "")
+    var movesNode=SKNode()
     var grouped=false
     var finalGrouped=false
     init(row:Int,col:Int,w:Double,h:Double,position:CGPoint,node:SKShapeNode,color:TileColor){
@@ -30,19 +32,29 @@ class Tile{
         self.node=node
         self.node.position=self.position
         self.color=color
-        self.moves=20 //Int.random(in: 0...5)
+        self.moves=15 //Int.random(in: 0...5)
         self.node.fillColor=getColor()
         self.moveLabel.verticalAlignmentMode = .center
+        self.moveShadow.verticalAlignmentMode = .center
         if(moves != 0){
             self.moveLabel.text="\(moves)"
+            self.moveShadow.text="\(moves)"
         }else{
             self.moveLabel.text=""
+            self.moveShadow.text=""
         }
-        
         self.moveLabel.fontColor=UIColor.black
         self.moveLabel.fontSize=20
         self.moveLabel.fontName="AvenirNext-Bold"
-        node.addChild(moveLabel)
+        self.moveShadow.fontColor=UIColor.systemGray4
+        self.moveShadow.fontSize=20
+        self.moveShadow.fontName="AvenirNext-Bold"
+        self.moveShadow.position=CGPoint(x: self.moveLabel.position.x+1, y: self.moveLabel.position.y-1)
+        self.movesNode.addChild(moveLabel)
+        self.movesNode.addChild(moveShadow)
+        moveLabel.zPosition = 3
+        moveShadow.zPosition = 2
+        node.addChild(movesNode)
     }
     convenience init(copy:Tile) {
         self.init(row: copy.row, col: copy.col, w: copy.w, h: copy.h, position: copy.position, node: copy.node, color: copy.color)

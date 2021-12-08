@@ -85,15 +85,17 @@ class GameScene: SKScene {
             let scene = SKScene(fileNamed: "MainMenu")!
             self.view?.presentScene(scene,transition: transition)
         }
-        board!.touchDown(touch: touch!)
-        movesRemaining!.zPosition=2
-        movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
+        if(!board!.gameOver){
+            board!.touchDown(touch: touch!)
+            movesRemaining!.zPosition=2
+        }
+        //movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
         board!.touchMoved(touch: touch!)
-        movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
+        //movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -115,8 +117,10 @@ class GameScene: SKScene {
         }
         scoreLabel!.text="Turn \(board!.turn+1)"
         comboLabel!.text="SCORE: \(board!.score)/250"
-        if(board!.tileSelected){
-            movesRemaining!.text="\(board!.selectedTile!.moves)"
+        if(board!.gameOver){
+            movesRemaining!.position=CGPoint(x: 0, y: 0)
+            movesRemaining!.zPosition=5
+            movesRemaining!.text="GAME OVER"
         }else{
             movesRemaining!.text=""
         }

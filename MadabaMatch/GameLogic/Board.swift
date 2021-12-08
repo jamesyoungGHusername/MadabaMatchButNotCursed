@@ -8,6 +8,15 @@
 import Foundation
 import SpriteKit
 
+/*
+ TO DO
+ IMPLEMENT BOARD CLASSES THAT ARE SPECIFIC TO DIFFERENT GAME MODES, allow parametes to be modified to change level difficulty
+ 
+ DECREMENT NUMBERS ON TILES ON SURVIVE, NO LIMIT TO MOVES, WHEN ONE TILE REACHES ZERO IT'S GAME OVER. ENCOURAGES THE CORRECT SORT OF PLAY.
+ 
+ */
+
+
 class Board{
     var tiles:[[Tile]]
     var r:Int
@@ -23,6 +32,7 @@ class Board{
     var targetScore=500
     var lastTouch:UITouch?
     var turn=0
+    var gameOver=false
     init(w:Double,h:Double,r:Int,c:Int,gs:GameScene){
         self.w=w
         self.h=h
@@ -48,7 +58,7 @@ class Board{
         if !tileSelected{
             for r in tiles{
                 for t in r{
-                    if t.node.contains(touch.location(in: gs)) && t.moves>0{
+                    if t.node.contains(touch.location(in: gs)){
                         t.selected=true
                         t.node.zPosition=3
                         selectedTile=t
@@ -71,7 +81,6 @@ class Board{
                             switchIndices(r1: t.row, c1: t.col, r2: selectedTile!.row, c2: selectedTile!.col)
                             t.switchPosition(with: selectedTile!)
                             t.updatePosition(animated: true, 0.1)
-                            selectedTile!.moves-=1
                             moved=true
                             selectedTile!.moveLabel.text="\(selectedTile!.moves)"
                             if(selectedTile!.moves<=0){
@@ -114,13 +123,21 @@ class Board{
         for g in tiles{
             for t in g{
                 if(moved && t.moves>0){
-                    
                     t.moves-=1
                     t.moveLabel.text="\(t.moves)"
+                    t.moveShadow.text="\(t.moves)"
+                    if(t.moves<=0){
+                        gameOver=true
+                    }else if t.moves<=5{
+                        t.moveLabel.fontColor=UIColor.red
+                    }
+                    
                 }
             }
         }
-        turn+=1
+        if(moved){
+            turn+=1
+        }
         moved=false
         if tileSelected{
             selectedTile?.selected=false
