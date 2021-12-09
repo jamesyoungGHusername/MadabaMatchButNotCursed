@@ -12,7 +12,9 @@ class TileFactory{
     var tileHeight:Double
     var board:Board
     var colorsPresent:Int?
-    init(for board:Board,_ colorsPresent:Int?){
+    var upperHealth:Int
+    var lowerHealth:Int
+    init(for board:Board,_ colorsPresent:Int?,upperHealth:Int,lowerHealth:Int){
         self.board=board
         print("board will have \(board.c) columns")
         print("board will have \(board.r) rows")
@@ -23,6 +25,8 @@ class TileFactory{
         tileWidth=board.w/Double(board.c)
         tileHeight=board.h/Double(board.r)
         self.colorsPresent=colorsPresent
+        self.upperHealth=upperHealth
+        self.lowerHealth=lowerHealth
     }
     func getRandomTileFor(r:Int,c:Int)->Tile{
         let node=SKShapeNode(rectOf: CGSize(width: tileWidth, height: tileHeight))
@@ -31,7 +35,7 @@ class TileFactory{
     func getRandomSurvivalTileFor(r:Int,c:Int)->Tile{
         let node=SKShapeNode(rectOf: CGSize(width: tileWidth, height: tileHeight))
         let t=Tile.init(row: r, col: c, w: tileWidth-2, h: tileHeight-2, position: getBoardPositionFrom(r: r, c: c), node: node, color: getRandomColor())
-        t.moves=Int.random(in: 6...15)
+        t.moves=Int.random(in: lowerHealth...upperHealth)
         return t
     }
     func getBoardPositionFrom(r:Int,c:Int)->CGPoint{

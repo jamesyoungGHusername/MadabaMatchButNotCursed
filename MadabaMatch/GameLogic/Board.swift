@@ -33,8 +33,9 @@ class Board{
     var lastTouch:UITouch?
     var turn=0
     var gameOver=false
-    
-    init(w:Double,h:Double,r:Int,c:Int,gs:GameScene){
+    var ub:Int
+    var lb:Int
+    init(w:Double,h:Double,r:Int,c:Int,gs:GameScene,uB:Int,lB:Int){
         self.w=w
         self.h=h
         self.r=r
@@ -42,9 +43,11 @@ class Board{
         self.sn=SKShapeNode(rectOf: CGSize(width: w, height: h))
         self.tiles=Array(repeating:[Tile](), count: r)
         self.gs=gs
+        ub=uB
+        lb=lB
     }
     func populate(){
-        self.tf=TileFactory(for:self,gs.colorsPresent)
+        self.tf=TileFactory(for:self,gs.colorsPresent,upperHealth: ub,lowerHealth: lb)
         for i in 0..<r{
             for j in 0..<c{
                 tiles[i].append(tf!.getRandomSurvivalTileFor(r: i, c: j))

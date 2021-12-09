@@ -4,6 +4,9 @@
 //
 //  Created by James Young on 12/5/21.
 //
+/*
+ TO DO, Find and fix bug that has to do with receiving touch input while animating.
+ */
 
 import SpriteKit
 import GameplayKit
@@ -26,13 +29,18 @@ class GameScene: SKScene {
     var started:Bool!
     var colorsPresent:Int!
     var readyForNext:Bool=false
+    var ub=15
+    var lb=5
     override func didMove(to view: SKView) {
+        let defaults=UserDefaults.standard
+        defaults.set(level,forKey: "SurviveLevel")
         self.addChild(openingMsg!.getNode())
         openingMsg.getNode().zPosition=10
-        board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:boardRows,c:boardCols,gs:self)
+        board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:boardRows,c:boardCols,gs:self,uB: ub, lB: lb)
         // Get label node from scene and store it for use later
         board!.populate()
         board!.score=sessionScore
+        defaults.set(board!.score,forKey: "SurviveScore")
         self.addChild(board!.sn)
         for r in board!.tiles{
             for t in r{
@@ -91,14 +99,34 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch=touches.first
+        if(level+1==11 && readyForNext){
+            let defaults=UserDefaults.standard
+            defaults.set(true, forKey: "SurvivalCompleted")
+            readyForNext=false
+            started=false
+            if backButton!.contains(touch!.location(in: self)){
+                print("back tapped")
+                let transition=SKTransition.moveIn(with: .left, duration: 0.2)
+                let scene = SKScene(fileNamed: "MainMenu")!
+                self.view?.presentScene(scene,transition: transition)
+            }
+        }
         if readyForNext {
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let nextScene = SKScene(fileNamed: "GameScene") as! GameScene
-            nextScene.setup(level: level+1, message: "Level \(level+1)", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4,score: board!.score)
+            
+            if(level+1==10){
+                nextScene.setup(level: 10, message: "FINAL LEVEL", bR: 11, bC: 7, turnGoal: 30,colorsPresent:4,score: board!.score,upperBound: 5,lowerBound: 3)
+            }else if (level+1<=5){
+                nextScene.setup(level: level+1, message: "Level \(level+1):\nSurvive \(5+level) turns.", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4,score: board!.score,upperBound: 15,lowerBound: 6)
+            }else{
+                nextScene.setup(level: level+1, message: "Level \(level+1):\nSurvive \(5+level) turns.", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4,score: board!.score,upperBound: 15-level+3,lowerBound: 3)
+            }
             self.view?.presentScene(nextScene,transition: transition)
         }
         if(started){
-            let touch=touches.first
+            
             if backButton!.contains(touch!.location(in: self)){
                 print("back tapped")
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
@@ -150,6 +178,8 @@ class GameScene: SKScene {
             movesRemaining!.position=CGPoint(x: 0, y: 0)
             movesRemaining!.zPosition=20
             movesRemaining!.text="GAME OVER"
+            let defaults=UserDefaults.standard
+            defaults.set(level,forKey: "SurviveLevel")
             comboLabel!.position=CGPoint(x: 0, y: -50)
             comboLabel!.zPosition=20
             comboLabel!.fontSize=25
@@ -172,7 +202,7 @@ class GameScene: SKScene {
         }
     }
     var sessionScore=0
-    public func setup(level:Int,message:String,bR:Int,bC:Int,turnGoal:Int,colorsPresent:Int,score:Int){
+    public func setup(level:Int,message:String,bR:Int,bC:Int,turnGoal:Int,colorsPresent:Int,score:Int,upperBound:Int,lowerBound:Int){
         self.started=false
         self.level=level
         self.startMessage=message
@@ -182,6 +212,8 @@ class GameScene: SKScene {
         openingMsg=GameMessage(message: message, position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2-10, height: self.size.height/10))
         self.colorsPresent=colorsPresent
         self.sessionScore=score
+        self.lb=lowerBound
+        self.ub=upperBound
     }
     func getPointLabel(at:CGPoint,points:Int)->SKNode{
         let score=SKLabelNode(text:"\(points) POINTS")
