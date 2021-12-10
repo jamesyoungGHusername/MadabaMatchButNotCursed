@@ -7,7 +7,11 @@
 
 import Foundation
 import SpriteKit
-class Tile{
+import AudioToolbox
+class Tile:NSObject, NSSecureCoding{
+    static var supportsSecureCoding=true
+    
+    
     var row:Int
     var col:Int
     var node:SKShapeNode
@@ -24,6 +28,7 @@ class Tile{
     var grouped=false
     var finalGrouped=false
     init(row:Int,col:Int,w:Double,h:Double,position:CGPoint,node:SKShapeNode,color:TileColor){
+        
         self.row=row
         self.col=col
         self.w=w
@@ -33,7 +38,27 @@ class Tile{
         self.node.position=self.position
         self.color=color
         self.moves=15 //Int.random(in: 0...5)
-        self.node.fillColor=getColor()
+        
+        switch color {
+        case .red:
+            self.node.fillColor = UIColor.systemRed
+        case .blue:
+            self.node.fillColor=UIColor.systemBlue
+        case .purple:
+            self.node.fillColor=UIColor.systemPurple
+        case .green:
+            self.node.fillColor=UIColor.systemGreen
+        case .yellow:
+            self.node.fillColor=UIColor.systemYellow
+        case .orange:
+            self.node.fillColor=UIColor.systemOrange
+        case .pink:
+            self.node.fillColor=UIColor.systemTeal
+        case .brown:
+            self.node.fillColor=UIColor.green
+        case .magenta:
+            self.node.fillColor=UIColor.magenta
+        }
         self.moveLabel.verticalAlignmentMode = .center
         self.moveShadow.verticalAlignmentMode = .center
         if(moves != 0){
@@ -55,10 +80,31 @@ class Tile{
         moveLabel.zPosition = 3
         moveShadow.zPosition = 2
         node.addChild(movesNode)
+  
     }
     convenience init(copy:Tile) {
         self.init(row: copy.row, col: copy.col, w: copy.w, h: copy.h, position: copy.position, node: copy.node, color: copy.color)
     }
+    convenience required init?(coder aDecoder: NSCoder) {
+        
+        let row=aDecoder.decodeInteger(forKey: "Row")
+        let col=aDecoder.decodeInteger(forKey: "Col")
+        let w=aDecoder.decodeDouble(forKey: "W")
+        let h=aDecoder.decodeDouble(forKey: "H")
+        let position=aDecoder.decodeObject(forKey: "TilePosition") as! CGPoint
+        let color=aDecoder.decodeObject(forKey: "TileColorEnum") as! TileColor
+        self.init(row: row, col: col, w: w, h: h, position: position, node: SKShapeNode(rectOf: CGSize(width: w, height: h)), color: color)
+        self.moves=aDecoder.decodeInteger(forKey: "Moves")
+    }
+    func encode(with coder: NSCoder) {
+        coder.encode(row, forKey: "Row")
+        coder.encode(col, forKey: "Col")
+        coder.encode(w, forKey: "W")
+        coder.encode(h, forKey: "H")
+        coder.encode(position, forKey: "TilePosition")
+        coder.encode(color, forKey: "TileColorEnum")
+        coder.encode(moves, forKey: "Moves")
+      }
     func copy()->Tile{
         return Tile.init(copy: self)
     }
@@ -105,6 +151,34 @@ class Tile{
             self.node.position=self.position
         }
     }
+    func updatePositionWithSound(_ duration:Double){
+        if(moves != 0){
+            self.moveLabel.text="\(moves)"
+            self.moveShadow.text="\(moves)"
+        }else{
+            self.moveLabel.text="X"
+            self.moveShadow.text="X"
+        }
+        if selected{
+            node.lineWidth=5
+            node.strokeColor=UIColor.white
+        }else if moves<=5{
+            node.lineWidth=5
+            node.strokeColor=UIColor.red
+            self.moveLabel.color=UIColor.red
+        }else{
+            node.lineWidth=3
+            node.strokeColor=UIColor.black
+        }
+        let generator = UISelectionFeedbackGenerator()
+        
+        animating=true
+        let action=SKAction.move(to: position, duration: duration)
+        if(moves>5){
+            self.node.zPosition=2
+        }
+        self.node.run(action,completion: {self.animating=false;if self.moves>5{self.node.zPosition=0};generator.selectionChanged();AudioServicesPlaySystemSound (1306)})
+    }
     func getColor()->UIColor{
         switch color {
         case .red:
@@ -130,7 +204,7 @@ class Tile{
     
     
 }
-enum TileColor:CaseIterable{
+enum TileColor:CaseIterable,Codable{
     case red
     case blue
     case purple

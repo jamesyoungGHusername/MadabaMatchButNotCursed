@@ -7,17 +7,18 @@
 
 import Foundation
 import SpriteKit
-
+import AudioToolbox
 /*
  TO DO
  IMPLEMENT BOARD CLASSES THAT ARE SPECIFIC TO DIFFERENT GAME MODES, allow parametes to be modified to change level difficulty
  
- DECREMENT NUMBERS ON TILES ON SURVIVE, NO LIMIT TO MOVES, WHEN ONE TILE REACHES ZERO IT'S GAME OVER. ENCOURAGES THE CORRECT SORT OF PLAY.
+ Game currently ends before checking to see if turn is done. Calls advance turn over and over until there are no groups, but says "game over" after the first call.
+ 
  
  */
 
 
-class Board{
+class Board:NSCoder{
     var tiles:[[Tile]]
     var r:Int
     var c:Int
@@ -45,6 +46,26 @@ class Board{
         self.gs=gs
         ub=uB
         lb=lB
+    }
+    convenience required init?(coder aDecoder: NSCoder) {
+        let w = aDecoder.decodeDouble(forKey: "bW")
+        let h = aDecoder.decodeDouble(forKey: "bH")
+        let r = aDecoder.decodeInteger(forKey: "bR")
+        let c = aDecoder.decodeInteger(forKey: "bC")
+        let uB=aDecoder.decodeInteger(forKey: "UB")
+        let lB=aDecoder.decodeInteger(forKey: "LB")
+        let gs=aDecoder.decodeObject(forKey: "GS") as! GameScene
+        self.init(w: w, h: h, r: r, c: c, gs: gs, uB: uB, lB: lB)
+    }
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encode(w, forKey: "bW")
+        aCoder.encode(h, forKey: "bH")
+        aCoder.encode(r, forKey: "bR")
+        aCoder.encode(c, forKey: "bC")
+        aCoder.encode(ub, forKey: "UB")
+        aCoder.encode(lb, forKey: "LB")
+        aCoder.encode(gs,forKey: "GS")
+        aCoder.encode(tiles,forKey: "Tiles")
     }
     func populate(){
         self.tf=TileFactory(for:self,gs.colorsPresent,upperHealth: ub,lowerHealth: lb)
@@ -83,9 +104,10 @@ class Board{
                 for t in r{
                     if t.node.contains(touch.location(in: gs)) && !t.selected{
                         if !t.animating{
+                            
                             switchIndices(r1: t.row, c1: t.col, r2: selectedTile!.row, c2: selectedTile!.col)
                             t.switchPosition(with: selectedTile!)
-                            t.updatePosition(animated: true, 0.1)
+                            t.updatePositionWithSound(0.1)
                             moved=true
                             selectedTile!.moveLabel.text="\(selectedTile!.moves)"
                             if(selectedTile!.moves<=0){
@@ -101,7 +123,7 @@ class Board{
                                             
                                         }
                                     }
-                                    advanceTurn()
+                                    //advanceTurn()
                                 }
                             }
                             movesRemaining-=1
@@ -125,27 +147,9 @@ class Board{
     }
     var moved=false
     func touchUp(touch:UITouch){
-        for g in tiles{
-            for t in g{
-                if(moved && t.moves>0){
-                    t.node.zPosition=0
-                    t.moves-=1
-                    t.moveLabel.text="\(t.moves)"
-                    t.moveShadow.text="\(t.moves)"
-                    if(t.moves<=0){
-                        gameOver=true
-                    }else if t.moves<=5{
-                        t.node.zPosition=10
-                        t.moveShadow.color=UIColor.red
-                    }
-                    
-                }
-            }
-        }
-        if(moved){
-            turn+=1
-        }
-        moved=false
+        
+        
+        
         if tileSelected{
             selectedTile?.selected=false
             selectedTile?.node.zPosition=0
@@ -201,19 +205,65 @@ class Board{
                                 self.advanceTurn()
                             }else{
                                 self.combo=0
-                                
+                                for g in self.tiles{
+                                    for t in g{
+                                        if(self.moved && t.moves>0){
+                                            t.node.zPosition=0
+                                            t.moves-=1
+                                            t.moveLabel.text="\(t.moves)"
+                                            t.moveShadow.text="\(t.moves)"
+                                            if(t.moves<=0){
+                                                self.gameOver=true
+                                            }else if t.moves<=5{
+                                                t.node.zPosition=10
+                                                t.moveShadow.color=UIColor.red
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                                if(self.moved){
+                                    self.turn+=1
+                                }
+                                self.moved=false
+                                if(self.turn==self.gs.turnGoal && !self.gameOver){
+                                    self.gs.readyForNext=true
+                                }
                             }
                         }
                     })
                     
                 }
             })
+        }else{
+            self.combo=0
+            for g in self.tiles{
+                for t in g{
+                    if(self.moved && t.moves>0){
+                        t.node.zPosition=0
+                        t.moves-=1
+                        t.moveLabel.text="\(t.moves)"
+                        t.moveShadow.text="\(t.moves)"
+                        if(t.moves<=0){
+                            self.gameOver=true
+                        }else if t.moves<=5{
+                            t.node.zPosition=10
+                            t.moveShadow.color=UIColor.red
+                        }
+                        
+                    }
+                }
+            }
+            if(self.moved){
+                self.turn+=1
+            }
+            self.moved=false
+            if(self.turn==self.gs.turnGoal && !self.gameOver){
+                self.gs.readyForNext=true
+            }
         }
         bringRedToFront()
         wiggleRed()
-        if(turn==gs.turnGoal && !gameOver){
-            gs.readyForNext=true
-        }
     }
     typealias GroupsRemoved = (_ progress:Int)->Void
     var score:Int=0

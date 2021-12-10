@@ -31,11 +31,15 @@ class GameScene: SKScene {
     var readyForNext:Bool=false
     var ub=15
     var lb=5
+    var movingFromPause=false
     override func didMove(to view: SKView) {
-        let defaults=UserDefaults.standard
-        defaults.set(level,forKey: "SurviveLevel")
+        if(!movingFromPause){
         self.addChild(openingMsg!.getNode())
         openingMsg.getNode().zPosition=10
+      
+        let defaults=UserDefaults.standard
+        defaults.set(level,forKey: "SurviveLevel")
+        
         board=Board.init(w: self.size.width/1.3, h: self.size.height/1.3,r:boardRows,c:boardCols,gs:self,uB: ub, lB: lb)
         // Get label node from scene and store it for use later
         board!.populate()
@@ -83,6 +87,9 @@ class GameScene: SKScene {
         backButton?.addChild(bText!)
         backButton?.position=CGPoint(x: -self.size.width/2+51, y: self.size.height/2-16)
         self.addChild(backButton!)
+        }else{
+            movingFromPause=false
+        }
     }
     
     
@@ -126,8 +133,19 @@ class GameScene: SKScene {
             self.view?.presentScene(nextScene,transition: transition)
         }
         if(started){
-            
             if backButton!.contains(touch!.location(in: self)){
+                let defaults=UserDefaults.standard
+                defaults.set(false,forKey: "gamePaused")
+                do{
+                    let encodedBoard = try NSKeyedArchiver.archivedData(withRootObject: board, requiringSecureCoding: false)
+                    defaults.set(encodedBoard, forKey: "boardToResume")
+                    defaults.set(board!.score, forKey: "lastScore")
+                }catch{
+                    print("error saving scene")
+                }
+                
+                
+                
                 print("back tapped")
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
                 let scene = SKScene(fileNamed: "MainMenu")!
@@ -169,9 +187,7 @@ class GameScene: SKScene {
             }
         }
         scoreLabel!.text="Turn \(board!.turn)/\(turnGoal!)"
-        if(board!.turn==turnGoal){
-            board!.gameOver=true
-        }
+        
         comboLabel!.text="SCORE: \(board!.score)"
         
         if(board!.gameOver && !readyForNext){
@@ -214,6 +230,7 @@ class GameScene: SKScene {
         self.sessionScore=score
         self.lb=lowerBound
         self.ub=upperBound
+        
     }
     func getPointLabel(at:CGPoint,points:Int)->SKNode{
         let score=SKLabelNode(text:"\(points) POINTS")

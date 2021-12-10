@@ -77,12 +77,32 @@ class MainMenu:SKScene{
         let defaults=UserDefaults.standard
         let score=defaults.integer(forKey: "SurviveScore")
         let completedSurvival=defaults.bool(forKey: "SurvivalCompleted")
+    
         print(completedSurvival)
         print(lastLevel!)
         lastLevel=6
         if button!.contains(touch!.location(in: self)){
             if(!completedSurvival){
-                if lastLevel==10{
+                defaults.set(false, forKey: "gamePaused")
+                if(defaults.bool(forKey: "gamePaused")){
+                    
+                    do{
+                        let transition=SKTransition.moveIn(with: .right, duration: 0.2)
+                        let codedBoard = defaults.object(forKey: "boardToResume") as! Data
+                        var board = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(codedBoard) as! Board
+                        scene1 = SKScene(fileNamed: "GameScene") as? GameScene
+                        scene1.board=board
+                        scene1.movingFromPause=true
+                        if(lastLevel<=5){
+                            scene1.setup(level: lastLevel, message: "Level \(lastLevel!):\nSurvive \(4+lastLevel) turns.", bR: 10, bC: 6, turnGoal: 4+lastLevel,colorsPresent:4,score: defaults.integer(forKey: "lastScore"),upperBound: 15,lowerBound:6)
+                        }else{
+                            scene1.setup(level: lastLevel, message: "Level \(lastLevel!)", bR: 10, bC: 6, turnGoal: 4+lastLevel,colorsPresent:4,score: score,upperBound: 15-lastLevel+4,lowerBound:3)
+                        }
+                        self.view?.presentScene(scene1,transition: transition)
+                    }catch{
+                        print("error loading last game")
+                    }
+                }else if lastLevel==10{
                     let transition=SKTransition.moveIn(with: .right, duration: 0.2)
                     scene1 = SKScene(fileNamed: "GameScene") as? GameScene
                     scene1.setup(level: 10, message: "FINAL LEVEL", bR: 11, bC: 7, turnGoal: 30,colorsPresent:4,score: score,upperBound: 5,lowerBound: 3)

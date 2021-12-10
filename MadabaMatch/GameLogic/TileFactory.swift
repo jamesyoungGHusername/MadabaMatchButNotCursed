@@ -7,7 +7,7 @@
 
 import Foundation
 import SpriteKit
-class TileFactory{
+class TileFactory:NSObject{
     var tileWidth:Double
     var tileHeight:Double
     var board:Board

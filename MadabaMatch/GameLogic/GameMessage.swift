@@ -7,7 +7,7 @@
 
 import Foundation
 import SpriteKit
-class GameMessage{
+class GameMessage:NSObject{
     private var node:SKNode
     private var text:SKLabelNode
     private var box:SKShapeNode
