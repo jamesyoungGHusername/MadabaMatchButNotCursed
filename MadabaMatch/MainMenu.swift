@@ -5,7 +5,14 @@
 //  Created by James Young on 12/7/21.
 //
 /*
- TO DO: add restart level function. save score and board position upon back?
+ TO DO:
+ Dash: add persistent high score. Implement restart button.
+ 
+ countdown: examine messages displayed when combos appear. Make restart button ask whether you want to start from the beginning or just restart the level. Make it more obvious that tiles are counting down (maybe only make some jiggle? Or change the shadow? or add a ticking sound when one reaches 1? fade the others? some combination?)
+ 
+ add third game mode (but what type)
+ add combo sound
+ make it so the score counts up every frame. have a second score variable stored in the game scene and while it's below the board score, increment it.
  */
 import Foundation
 import SpriteKit
@@ -17,6 +24,9 @@ class MainMenu:SKScene{
     var buttonBackground:SKShapeNode!
     var buttonText:SKLabelNode!
     var button:SKNode!
+    var dashButton:SKNode!
+    var dashBackground:SKShapeNode!
+    var dashText:SKLabelNode!
     var gm:SKLabelNode!
     var scene1:GameScene!
     var lastLevel:Int!
@@ -62,9 +72,22 @@ class MainMenu:SKScene{
         button=SKNode()
         button!.addChild(buttonBackground!)
         button!.addChild(buttonText!)
-        button.position=CGPoint(x: 0, y:self.size.height/4-step )
+        button.position=CGPoint(x: 0, y:self.size.height/4-2*step )
         self.addChild(button!)
         self.backgroundColor=UIColor.black
+        dashBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
+        dashBackground?.fillColor=getColor(color: getRandomColor())
+        dashText=SKLabelNode(text: "Classic")
+        dashText!.fontName="AvenirNext-Bold"
+        dashText!.fontSize=15
+        dashText!.zPosition=1
+        dashText!.fontColor=UIColor.black
+        dashText!.verticalAlignmentMode = .center
+        dashButton=SKNode()
+        dashButton!.addChild(dashBackground!)
+        dashButton!.addChild(dashText!)
+        dashButton!.position=CGPoint(x: 0, y:self.size.height/4-step )
+        self.addChild(dashButton!)
         gm=SKLabelNode(text: "Game Mode:")
         gm.fontSize=30
         gm.fontColor=UIColor.white
@@ -80,8 +103,13 @@ class MainMenu:SKScene{
     
         print(completedSurvival)
         print(lastLevel!)
-        lastLevel=6
-        if button!.contains(touch!.location(in: self)){
+        
+        if dashButton!.contains(touch!.location(in: self)){
+            let transition=SKTransition.moveIn(with: .right, duration: 0.2)
+            let dashScene=SKScene(fileNamed: "DashGameScene") as! DashGameScene
+            dashScene.setup(level: 1, message: "Match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
+            self.view?.presentScene(dashScene,transition: transition)
+        }else if button!.contains(touch!.location(in: self)){
             if(!completedSurvival){
                 defaults.set(false, forKey: "gamePaused")
                 if(defaults.bool(forKey: "gamePaused")){

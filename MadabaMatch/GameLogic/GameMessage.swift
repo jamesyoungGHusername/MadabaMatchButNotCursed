@@ -34,4 +34,7 @@ class GameMessage:NSObject{
     func getNode()->SKNode{
         return node
     }
+    func setMessage(s:String){
+        text.text=s
+    }
 }

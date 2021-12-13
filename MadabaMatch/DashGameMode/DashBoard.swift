@@ -1,8 +1,8 @@
 //
-//  Board.swift
-//  MadabaMatch
+//  DashBoard.swift
+//  Madaba
 //
-//  Created by James Young on 12/5/21.
+//  Created by James Young on 12/11/21.
 //
 
 import Foundation
@@ -18,17 +18,17 @@ import AudioToolbox
  */
 
 
-class Board:NSCoder{
-    var tiles:[[Tile]]
+class DashBoard{
+    var tiles:[[DashTile]]
     var r:Int
     var c:Int
     var w:Double
     var h:Double
     var sn:SKShapeNode
     var tileSelected:Bool=false
-    var selectedTile:Tile?
-    var tf:TileFactory?
-    var gs:GameScene
+    var selectedTile:DashTile?
+    var tf:DashTileFactory?
+    var gs:DashGameScene
     var movesRemaining=50
     var targetScore=500
     var lastTouch:UITouch?
@@ -36,42 +36,23 @@ class Board:NSCoder{
     var gameOver=false
     var ub:Int
     var lb:Int
-    init(w:Double,h:Double,r:Int,c:Int,gs:GameScene,uB:Int,lB:Int){
+    init(w:Double,h:Double,r:Int,c:Int,gs:DashGameScene,uB:Int,lB:Int){
         self.w=w
         self.h=h
         self.r=r
         self.c=c
         self.sn=SKShapeNode(rectOf: CGSize(width: w, height: h))
-        self.tiles=Array(repeating:[Tile](), count: r)
+        self.tiles=Array(repeating:[DashTile](), count: r)
         self.gs=gs
         ub=uB
         lb=lB
     }
-    convenience required init?(coder aDecoder: NSCoder) {
-        let w = aDecoder.decodeDouble(forKey: "bW")
-        let h = aDecoder.decodeDouble(forKey: "bH")
-        let r = aDecoder.decodeInteger(forKey: "bR")
-        let c = aDecoder.decodeInteger(forKey: "bC")
-        let uB=aDecoder.decodeInteger(forKey: "UB")
-        let lB=aDecoder.decodeInteger(forKey: "LB")
-        let gs=aDecoder.decodeObject(forKey: "GS") as! GameScene
-        self.init(w: w, h: h, r: r, c: c, gs: gs, uB: uB, lB: lB)
-    }
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encode(w, forKey: "bW")
-        aCoder.encode(h, forKey: "bH")
-        aCoder.encode(r, forKey: "bR")
-        aCoder.encode(c, forKey: "bC")
-        aCoder.encode(ub, forKey: "UB")
-        aCoder.encode(lb, forKey: "LB")
-        aCoder.encode(gs,forKey: "GS")
-        aCoder.encode(tiles,forKey: "Tiles")
-    }
+
     func populate(){
-        self.tf=TileFactory(for:self,gs.colorsPresent,upperHealth: ub,lowerHealth: lb)
+        self.tf=DashTileFactory(for:self,gs.colorsPresent,upperHealth: ub,lowerHealth: lb)
         for i in 0..<r{
             for j in 0..<c{
-                tiles[i].append(tf!.getRandomSurvivalTileFor(r: i, c: j))
+                tiles[i].append(tf!.getRandomTileFor(r: i, c: j))
                 tiles[i][j].updatePosition(animated: false, 0)
             }
         }
@@ -96,21 +77,39 @@ class Board:NSCoder{
         }
     }
     func touchMoved(touch:UITouch){
-        if tileSelected{
+        if movesRemaining==0{
+            //movesRemaining-=1
+            print("detected no moves remaining")
+            if tileSelected{
+                selectedTile?.selected=false
+                selectedTile?.node.zPosition=0
+                tileSelected=false
+                selectedTile=nil
+                for r in tiles{
+                    for t in r{
+                        t.updatePosition(animated: true, 0.1)
+                        
+                    }
+                }
+                advanceTurn()
+            }
+        }else if tileSelected{
             let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
             selectedTile!.node.run(drag)
             for r in tiles{
                 for t in r{
                     if t.node.contains(touch.location(in: gs)) && !t.selected{
                         if !t.animating{
-                            
                             switchIndices(r1: t.row, c1: t.col, r2: selectedTile!.row, c2: selectedTile!.col)
                             t.switchPosition(with: selectedTile!)
                             t.updatePositionWithSound(0.1)
                             moved=true
-                            selectedTile!.moveLabel.text="\(selectedTile!.moves)"
+                            if(movesRemaining>0){
+                                movesRemaining-=1
+                            }
+                           // selectedTile!.moveLabel.text="\(selectedTile!.moves)"
                             if(selectedTile!.moves<=0){
-                                selectedTile!.moveLabel.text=""
+                                //selectedTile!.moveLabel.text=""
                                 if tileSelected{
                                     selectedTile?.selected=false
                                     selectedTile?.node.zPosition=0
@@ -119,19 +118,19 @@ class Board:NSCoder{
                                     for r in tiles{
                                         for t in r{
                                             t.updatePosition(animated: true, 0.1)
-                                            
                                         }
                                     }
                                     //advanceTurn()
                                 }
                             }
-                            movesRemaining-=1
+                           
                         }
                     }
                 }
             }
         }
     }
+
     func switchIndices(r1:Int,c1:Int,r2:Int,c2:Int){
         //print("Switching tiles at index \(r1),\(c1) and \(r2),\(c2)")
         //print("the tiles in this location in memory are")
@@ -146,9 +145,7 @@ class Board:NSCoder{
     }
     var moved=false
     func touchUp(touch:UITouch){
-        
-        
-        
+
         if tileSelected{
             selectedTile?.selected=false
             selectedTile?.node.zPosition=0
@@ -190,7 +187,9 @@ class Board:NSCoder{
         var numGrouped=0
         for g in groups{
             numGrouped+=g.count
+            
         }
+        print("detected \(numGrouped)")
         if(numGrouped>0){
             removeGroups(completionHandler:{ progress in
                 if progress==numGrouped{
@@ -204,29 +203,16 @@ class Board:NSCoder{
                                 self.advanceTurn()
                             }else{
                                 self.combo=0
-                                for g in self.tiles{
-                                    for t in g{
-                                        if(self.moved && t.moves>0){
-                                            t.node.zPosition=0
-                                            t.moves-=1
-                                            t.moveLabel.text="\(t.moves)"
-                                            t.moveShadow.text="\(t.moves)"
-                                            if(t.moves<=0){
-                                                self.gameOver=true
-                                            }else if t.moves<=5{
-                                                t.node.zPosition=10
-                                                t.moveShadow.color=UIColor.red
-                                            }
-                                            
-                                        }
-                                    }
-                                }
                                 if(self.moved){
                                     self.turn+=1
                                 }
                                 self.moved=false
-                                if(self.turn==self.gs.turnGoal && !self.gameOver){
-                                    self.gs.readyForNext=true
+                                if self.movesRemaining<=0{
+                                    print("setting gameover to true")
+                                    self.gameOver=true
+                                    self.gs.winningMessage.setMessage(s: "FINAL SCORE: \(self.score)")
+                                    self.gs.winningMessage.getNode().zPosition=20
+                                    self.gs.winningMessage.getNode().run(SKAction.fadeIn(withDuration: 0.3))
                                 }
                             }
                         }
@@ -234,32 +220,21 @@ class Board:NSCoder{
                     
                 }
             })
-        }else{
+        }else {
+            
             self.combo=0
-            for g in self.tiles{
-                for t in g{
-                    if(self.moved && t.moves>0){
-                        t.node.zPosition=0
-                        t.moves-=1
-                        t.moveLabel.text="\(t.moves)"
-                        t.moveShadow.text="\(t.moves)"
-                        if(t.moves<=0){
-                            self.gameOver=true
-                        }else if t.moves<=5{
-                            t.node.zPosition=10
-                            t.moveShadow.color=UIColor.red
-                        }
-                        
-                    }
-                }
+            if movesRemaining<=0{
+                print("End of the game detected")
+                gameOver=true
+                self.gs.winningMessage.setMessage(s: "FINAL SCORE: \(self.score)")
+                self.gs.winningMessage.getNode().zPosition=20
+                self.gs.winningMessage.getNode().run(SKAction.fadeIn(withDuration: 0.3))
             }
             if(self.moved){
                 self.turn+=1
             }
             self.moved=false
-            if(self.turn==self.gs.turnGoal && !self.gameOver){
-                self.gs.readyForNext=true
-            }
+           
         }
         bringRedToFront()
         wiggleRed()
@@ -267,8 +242,8 @@ class Board:NSCoder{
     typealias GroupsRemoved = (_ progress:Int)->Void
     var score:Int=0
     var maxCombo:Int=0
-    var groups:[[Tile]]=[[]]
-    var group:[Tile]=[]
+    var groups:[[DashTile]]=[[]]
+    var group:[DashTile]=[]
     func highlightGroups(){
         for r in tiles{
             for t in r{
@@ -299,7 +274,7 @@ class Board:NSCoder{
         
     }
     var combo:Int = -1
-    func calculateScore(g:[Tile]){
+    func calculateScore(g:[DashTile]){
         
         print("calculating score for group of \(g.count)")
         var groupScore=0
@@ -333,11 +308,13 @@ class Board:NSCoder{
         var count=0
         for g in groups{
             combo+=1
-            self.calculateScore(g:g)
             for t in g{
                 t.node.run(rotate)
                 t.node.run(shrink,completion: {t.node.removeFromParent();count+=1;completionHandler(count)})
             }
+        }
+        for g in groups{
+            self.calculateScore(g:g)
         }
         
     }
@@ -370,7 +347,7 @@ class Board:NSCoder{
     }
     
     
-    func moveDown(tile:Tile,move:Int){
+    func moveDown(tile:DashTile,move:Int){
         
         if(emptyBelow(r: tile.row, c: tile.col)){
             //print("switching position with empty at \(tile.row-1),\(tile.col)")
@@ -411,7 +388,7 @@ class Board:NSCoder{
         var count=0
         for g in groups{
             for t in g{
-                tiles[t.row][t.col]=(tf!.getRandomSurvivalTileFor(r: t.row, c: t.col))
+                tiles[t.row][t.col]=(tf!.getRandomTileFor(r: t.row, c: t.col))
                 let shrink=SKAction.scale(by: 0.1, duration: 0)
                 tiles[t.row][t.col].node.run(shrink)
                 tiles[t.row][t.col].updatePosition(animated: false, 0)
@@ -472,7 +449,7 @@ class Board:NSCoder{
         }
         return ComboID.single
     }
-    func averagePosition(of:[Tile])->CGPoint{
+    func averagePosition(of:[DashTile])->CGPoint{
         var ax=0.0
         var ay=0.0
         for t in of{
