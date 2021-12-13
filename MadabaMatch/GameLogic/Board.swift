@@ -181,7 +181,7 @@ class Board:NSCoder{
     func wiggleRed(){
         for tile in tiles {
             for t in tile{
-                if t.moves==1{
+                if t.moves<=1{
                     t.node.run(wiggle(times: 5-t.moves))
                 }
             }
@@ -195,6 +195,7 @@ class Board:NSCoder{
             numGrouped+=g.count
         }
         if(numGrouped>0){
+            
             removeGroups(completionHandler:{ progress in
                 if progress==numGrouped{
                     self.boardAnimating=true

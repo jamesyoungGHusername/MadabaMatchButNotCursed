@@ -53,9 +53,9 @@ class MainMenu:SKScene{
         buttonBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
         buttonBackground?.fillColor=getColor(color: getRandomColor())
         if(lastLevel==0){
-            buttonText=SKLabelNode(text: "Countdown LV:1")
+            buttonText=SKLabelNode(text: "Countdown")
         }else{
-            buttonText=SKLabelNode(text: "Countdown Lv:\(lastLevel!)")
+            buttonText=SKLabelNode(text: "Countdown")
         }
         if(defaults.bool(forKey: "SurvivalCompleted")){
             buttonText=SKLabelNode(text: "Countdown Completed")
@@ -107,7 +107,7 @@ class MainMenu:SKScene{
         if dashButton!.contains(touch!.location(in: self)){
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let dashScene=SKScene(fileNamed: "DashGameScene") as! DashGameScene
-            dashScene.setup(level: 1, message: "Match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
+            dashScene.setup(level: 1, message: "Drag to match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
             self.view?.presentScene(dashScene,transition: transition)
         }else if button!.contains(touch!.location(in: self)){
             if(!completedSurvival){
@@ -139,7 +139,7 @@ class MainMenu:SKScene{
                     print("Start tapped")
                     let transition=SKTransition.moveIn(with: .right, duration: 0.2)
                     scene1 = SKScene(fileNamed: "GameScene") as? GameScene
-                    scene1.setup(level: 1, message: "Connect groups of 4 tiles.\nDo not let tiles count down to 0.\nSurvive 5 turns.", bR: 10, bC: 6, turnGoal: 5,colorsPresent:4,score: 0,upperBound:15 ,lowerBound:6)
+                    scene1.setup(level: 1, message: "Drag to match groups of 4 tiles.\nDo not let tiles count down to 0.\nSurvive 5 turns.", bR: 10, bC: 6, turnGoal: 5,colorsPresent:4,score: 0,upperBound:15 ,lowerBound:6)
                     self.view?.presentScene(scene1,transition: transition)
                 }else{
                     let transition=SKTransition.moveIn(with: .right, duration: 0.2)

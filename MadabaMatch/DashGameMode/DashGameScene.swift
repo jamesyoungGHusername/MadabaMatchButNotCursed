@@ -8,6 +8,7 @@
 
 import SpriteKit
 import GameplayKit
+import AudioToolbox
 
 class DashGameScene: SKScene {
     
@@ -125,6 +126,12 @@ class DashGameScene: SKScene {
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
                 let scene = SKScene(fileNamed: "MainMenu")!
                 self.view?.presentScene(scene,transition: transition)
+            }else if restartButton!.contains(touch!.location(in: self)){
+                let defaults=UserDefaults.standard
+                let transition=SKTransition.crossFade(withDuration: 0.5)
+                let scene = SKScene(fileNamed: "DashGameScene") as! DashGameScene
+                scene.setup(level: 1, message: "Drag to match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
+                self.view?.presentScene(scene,transition: transition)
             }
             if(!board!.gameOver){
                 board!.touchDown(touch: touch!)
@@ -154,7 +161,7 @@ class DashGameScene: SKScene {
     }
     
     var winningMessage:GameMessage!
-    
+    var localScore=0
     override func update(_ currentTime: TimeInterval) {
         var animating=false
         for c in self.children{
@@ -162,8 +169,11 @@ class DashGameScene: SKScene {
                 animating=true
             }
         }
-        
-        comboLabel!.text="SCORE: \(board!.score)"
+        if(localScore<board!.score){
+            localScore+=1
+            AudioServicesPlaySystemSound(1103)
+        }
+        comboLabel!.text="SCORE: \(localScore)"
         movesRemaining!.text="\(board!.movesRemaining)"
         if(board!.gameOver){
             //let defaults=UserDefaults.standard

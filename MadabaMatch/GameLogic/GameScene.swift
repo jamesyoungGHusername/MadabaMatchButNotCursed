@@ -10,7 +10,7 @@
 
 import SpriteKit
 import GameplayKit
-
+import AudioToolbox
 class GameScene: SKScene {
     
     var board:Board!
@@ -202,6 +202,7 @@ class GameScene: SKScene {
     }
     
     var winningMessage:GameMessage!
+    var localScore=0
     override func update(_ currentTime: TimeInterval) {
         var animating=false
         for c in self.children{
@@ -210,8 +211,17 @@ class GameScene: SKScene {
             }
         }
         scoreLabel!.text="Turn \(board!.turn)/\(turnGoal!)"
+        if(localScore<board!.score){
+            if(board!.score-localScore>100){
+                localScore+=5
+                AudioServicesPlaySystemSound(1103)
+            }else{
+                localScore+=1
+                AudioServicesPlaySystemSound(1103)
+            }
+        }
         
-        comboLabel!.text="SCORE: \(board!.score)"
+        comboLabel!.text="SCORE: \(localScore)"
         
         if(board!.gameOver && !readyForNext){
             movesRemaining!.position=CGPoint(x: 0, y: 0)
@@ -251,6 +261,7 @@ class GameScene: SKScene {
         openingMsg=GameMessage(message: message, position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2-10, height: self.size.height/10))
         self.colorsPresent=colorsPresent
         self.sessionScore=score
+        self.localScore=score
         self.lb=lowerBound
         self.ub=upperBound
         

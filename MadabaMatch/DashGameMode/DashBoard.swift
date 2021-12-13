@@ -60,17 +60,19 @@ class DashBoard{
     }
     
     func touchDown(touch:UITouch){
-        lastTouch=touch
-        if !tileSelected{
-            for r in tiles{
-                for t in r{
-                    if t.node.contains(touch.location(in: gs)){
-                        t.selected=true
-                        t.node.zPosition=3
-                        selectedTile=t
-                        tileSelected=true
-                        let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
-                        selectedTile!.node.run(drag)
+        if !boardAnimating{
+            lastTouch=touch
+            if !tileSelected{
+                for r in tiles{
+                    for t in r{
+                        if t.node.contains(touch.location(in: gs)){
+                            t.selected=true
+                            t.node.zPosition=3
+                            selectedTile=t
+                            tileSelected=true
+                            let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
+                            selectedTile!.node.run(drag)
+                        }
                     }
                 }
             }
@@ -182,6 +184,7 @@ class DashBoard{
             }
         }
     }
+    var boardAnimating=false
     func advanceTurn(){
         highlightGroups()
         var numGrouped=0
@@ -191,8 +194,10 @@ class DashBoard{
         }
         print("detected \(numGrouped)")
         if(numGrouped>0){
+            
             removeGroups(completionHandler:{ progress in
                 if progress==numGrouped{
+                    self.boardAnimating=true
                     self.shiftDown()
                     self.repopulateBoard(completionHandler:{ numDone in
                         if numDone==numGrouped{
@@ -202,6 +207,7 @@ class DashBoard{
                                 self.bringRedToFront()
                                 self.advanceTurn()
                             }else{
+                                self.boardAnimating=false
                                 self.combo=0
                                 if(self.moved){
                                     self.turn+=1
@@ -358,7 +364,7 @@ class DashBoard{
             //print("new position is \(tiles[tile.row][tile.col].position)")
             switchIndices(r1: tile.row, c1: tile.col, r2: tile.row-1, c2: tile.col)
             tile.node.zPosition=3
-            tile.updatePosition(animated: true, 0.2)
+            tile.updatePositionWithSound(0.2)
             
             //print("tile moved to \(tile.row),\(tile.col)")
             if(emptyBelow(r: tile.row, c: tile.col)){
