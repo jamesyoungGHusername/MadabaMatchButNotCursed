@@ -79,17 +79,19 @@ class Board:NSCoder{
     }
     
     func touchDown(touch:UITouch){
-        lastTouch=touch
-        if !tileSelected{
-            for r in tiles{
-                for t in r{
-                    if t.node.contains(touch.location(in: gs)){
-                        t.selected=true
-                        t.node.zPosition=3
-                        selectedTile=t
-                        tileSelected=true
-                        let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
-                        selectedTile!.node.run(drag)
+        if !boardAnimating{
+            lastTouch=touch
+            if !tileSelected{
+                for r in tiles{
+                    for t in r{
+                        if t.node.contains(touch.location(in: gs)){
+                            t.selected=true
+                            t.node.zPosition=3
+                            selectedTile=t
+                            tileSelected=true
+                            let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
+                            selectedTile!.node.run(drag)
+                        }
                     }
                 }
             }
@@ -179,12 +181,13 @@ class Board:NSCoder{
     func wiggleRed(){
         for tile in tiles {
             for t in tile{
-                if t.moves<=5{
+                if t.moves==1{
                     t.node.run(wiggle(times: 5-t.moves))
                 }
             }
         }
     }
+    var boardAnimating=false
     func advanceTurn(){
         highlightGroups()
         var numGrouped=0
@@ -194,6 +197,7 @@ class Board:NSCoder{
         if(numGrouped>0){
             removeGroups(completionHandler:{ progress in
                 if progress==numGrouped{
+                    self.boardAnimating=true
                     self.shiftDown()
                     self.repopulateBoard(completionHandler:{ numDone in
                         if numDone==numGrouped{
@@ -203,6 +207,8 @@ class Board:NSCoder{
                                 self.bringRedToFront()
                                 self.advanceTurn()
                             }else{
+                                self.boardAnimating=false
+                                var audioPlayed=false
                                 self.combo=0
                                 for g in self.tiles{
                                     for t in g{
@@ -217,17 +223,26 @@ class Board:NSCoder{
                                                 t.node.zPosition=10
                                                 t.moveShadow.color=UIColor.red
                                             }
-                                            
                                         }
                                     }
                                 }
                                 if(self.moved){
                                     self.turn+=1
                                 }
+                                
                                 self.moved=false
                                 if(self.turn==self.gs.turnGoal && !self.gameOver){
                                     self.gs.readyForNext=true
                                 }
+                                for g in self.tiles{
+                                    for t in g{
+                                        if(!audioPlayed && t.moves==1 && !self.gameOver && !self.gs.readyForNext){
+                                            AudioServicesPlaySystemSound (1326)
+                                            audioPlayed=true
+                                        }
+                                    }
+                                }
+                                self.wiggleRed()
                             }
                         }
                     })
@@ -236,6 +251,7 @@ class Board:NSCoder{
             })
         }else{
             self.combo=0
+            var audioPlayed=false
             for g in self.tiles{
                 for t in g{
                     if(self.moved && t.moves>0){
@@ -248,6 +264,7 @@ class Board:NSCoder{
                         }else if t.moves<=5{
                             t.node.zPosition=10
                             t.moveShadow.color=UIColor.red
+                            
                         }
                         
                     }
@@ -255,14 +272,25 @@ class Board:NSCoder{
             }
             if(self.moved){
                 self.turn+=1
+                
             }
+            
             self.moved=false
             if(self.turn==self.gs.turnGoal && !self.gameOver){
                 self.gs.readyForNext=true
             }
+            for g in self.tiles{
+                for t in g{
+                    if(!audioPlayed && t.moves==1 && !self.gameOver && !self.gs.readyForNext){
+                        AudioServicesPlaySystemSound (1326)
+                        audioPlayed=true
+                    }
+                }
+            }
         }
-        bringRedToFront()
         wiggleRed()
+        bringRedToFront()
+        
     }
     typealias GroupsRemoved = (_ progress:Int)->Void
     var score:Int=0
@@ -381,7 +409,7 @@ class Board:NSCoder{
             //print("new position is \(tiles[tile.row][tile.col].position)")
             switchIndices(r1: tile.row, c1: tile.col, r2: tile.row-1, c2: tile.col)
             tile.node.zPosition=3
-            tile.updatePosition(animated: true, 0.2)
+            tile.updatePositionWithSound(0.2)
             
             //print("tile moved to \(tile.row),\(tile.col)")
             if(emptyBelow(r: tile.row, c: tile.col)){
