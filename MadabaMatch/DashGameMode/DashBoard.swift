@@ -205,6 +205,7 @@ class DashBoard{
                             if(!self.groups.isEmpty){
                                 self.groups.removeAll()
                                 self.bringRedToFront()
+                                self.gs.run(SKAction.wait(forDuration: 0.4))
                                 self.advanceTurn()
                             }else{
                                 self.boardAnimating=false
@@ -364,7 +365,7 @@ class DashBoard{
             //print("new position is \(tiles[tile.row][tile.col].position)")
             switchIndices(r1: tile.row, c1: tile.col, r2: tile.row-1, c2: tile.col)
             tile.node.zPosition=3
-            tile.updatePositionWithSound(0.2)
+            tile.updatePositionWithSound(0.3)
             
             //print("tile moved to \(tile.row),\(tile.col)")
             if(emptyBelow(r: tile.row, c: tile.col)){
@@ -399,7 +400,7 @@ class DashBoard{
                 tiles[t.row][t.col].node.run(shrink)
                 tiles[t.row][t.col].updatePosition(animated: false, 0)
                 tiles[t.row][t.col].node.zPosition = -1
-                let grow=SKAction.scale(by: 10, duration: 0.5)
+                let grow=SKAction.scale(by: 10, duration: 0.7)
                 gs.addChild(tiles[t.row][t.col].node)
                 tiles[t.row][t.col].node.run(grow,completion: {count+=1;completionHandler(count)})
             }

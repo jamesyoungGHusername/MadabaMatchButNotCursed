@@ -410,7 +410,7 @@ class Board:NSCoder{
             //print("new position is \(tiles[tile.row][tile.col].position)")
             switchIndices(r1: tile.row, c1: tile.col, r2: tile.row-1, c2: tile.col)
             tile.node.zPosition=3
-            tile.updatePositionWithSound(0.2)
+            tile.updatePositionWithSound(0.3)
             
             //print("tile moved to \(tile.row),\(tile.col)")
             if(emptyBelow(r: tile.row, c: tile.col)){

@@ -124,10 +124,10 @@ class DashGameScene: SKScene {
         if(started){
             if backButton!.contains(touch!.location(in: self)){
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
-                let scene = SKScene(fileNamed: "MainMenu")!
+                let scene = SKScene(fileNamed: "DashReadyScene")!
                 self.view?.presentScene(scene,transition: transition)
             }else if restartButton!.contains(touch!.location(in: self)){
-                let defaults=UserDefaults.standard
+                
                 let transition=SKTransition.crossFade(withDuration: 0.5)
                 let scene = SKScene(fileNamed: "DashGameScene") as! DashGameScene
                 scene.setup(level: 1, message: "Drag to match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
@@ -178,7 +178,10 @@ class DashGameScene: SKScene {
         if(board!.gameOver){
             //let defaults=UserDefaults.standard
             comboLabel!.text=""
-            
+            let defaults=UserDefaults.standard
+            if board!.score>defaults.integer(forKey: "DashHighScore"){
+                defaults.set(board!.score, forKey: "DashHighScore")
+            }
         }
     }
     var sessionScore=0

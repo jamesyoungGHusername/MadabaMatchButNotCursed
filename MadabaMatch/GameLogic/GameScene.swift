@@ -55,7 +55,7 @@ class GameScene: SKScene {
                 t.updatePosition(animated: false, 0)
             }
         }
-        winningMessage=GameMessage(message: "YOU WIN", position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2, height: self.size.height/10))
+        winningMessage=GameMessage(message: "YOU WIN\nTap To Continue", position: CGPoint(x:-self.size.height/3,y:self.size.width), size: CGSize(width: self.size.width/2, height: self.size.height/10))
         let invis=SKAction.fadeOut(withDuration: 0)
         
         winningMessage.getNode().run(invis)
@@ -131,7 +131,7 @@ class GameScene: SKScene {
             if backButton!.contains(touch!.location(in: self)){
                 print("back tapped")
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
-                let scene = SKScene(fileNamed: "MainMenu")!
+                let scene = SKScene(fileNamed: "CountdownReadyScene")!
                 self.view?.presentScene(scene,transition: transition)
             }
         }
@@ -150,11 +150,18 @@ class GameScene: SKScene {
         }
         if(started){
             if restartButton!.contains(touch!.location(in: self)){
-                let defaults=UserDefaults.standard
-                defaults.set(1, forKey: "SurviveLevel")
-                let transition=SKTransition.moveIn(with: .left, duration: 0.2)
-                let scene = SKScene(fileNamed: "MainMenu")!
-                self.view?.presentScene(scene,transition: transition)
+                let transition=SKTransition.crossFade(withDuration: 0.5)
+                let nextScene = SKScene(fileNamed: "GameScene") as! GameScene
+                if(level==10){
+                    nextScene.setup(level: 10, message: "FINAL LEVEL", bR: 11, bC: 7, turnGoal: 30,colorsPresent:4,score: sessionScore,upperBound: 5,lowerBound: 3)
+                }else if level==1{
+                    nextScene.setup(level: 1, message: "Drag to match groups of 4 tiles.\nTiles count down by one each turn.\nDo not let any reach zero.", bR: 10, bC: 6, turnGoal: 5,colorsPresent:4,score: 0,upperBound:15 ,lowerBound:6)
+                }else if (level+1<=5){
+                    nextScene.setup(level: level, message: "Level \(level!):\nSurvive \(4+level) turns.", bR: 10, bC: 6, turnGoal: turnGoal,colorsPresent:4,score: sessionScore,upperBound: ub,lowerBound: lb)
+                }else{
+                    nextScene.setup(level: level, message: "Level \(level!):\nSurvive \(4+level) turns.", bR: 10, bC: 6, turnGoal: turnGoal,colorsPresent:4,score: sessionScore,upperBound: ub,lowerBound: lb)
+                }
+                self.view?.presentScene(nextScene,transition: transition)
             }else if backButton!.contains(touch!.location(in: self)){
                 let defaults=UserDefaults.standard
                 defaults.set(false,forKey: "gamePaused")
@@ -171,7 +178,7 @@ class GameScene: SKScene {
                
                 print("back tapped")
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
-                let scene = SKScene(fileNamed: "MainMenu")!
+                let scene = SKScene(fileNamed: "CountdownReadyScene")!
                 self.view?.presentScene(scene,transition: transition)
             }
             if(!board!.gameOver){
