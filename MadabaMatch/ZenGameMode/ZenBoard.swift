@@ -19,7 +19,7 @@ class ZenBoard{
     var tileSelected:Bool=false
     var selectedTile:ZenTile?
     var tf:ZenTileFactory?
-    var gs:DashGameScene
+    var gs:ZenGameScene
     var lastTouch:UITouch?
     var gameOver=false
     var moved=false
@@ -33,7 +33,7 @@ class ZenBoard{
     var groupNode:SKNode?
     var groupPlaceable=true
     var lastValidBoard:ZenBoard?
-    init(w:Double,h:Double,r:Int,c:Int,gs:DashGameScene){
+    init(w:Double,h:Double,r:Int,c:Int,gs:ZenGameScene){
         self.w=w
         self.h=h
         self.r=r

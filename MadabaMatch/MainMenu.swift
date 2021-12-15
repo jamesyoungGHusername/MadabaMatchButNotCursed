@@ -30,6 +30,7 @@ class MainMenu:SKScene{
     var gm:SKLabelNode!
     var scene1:GameScene!
     var lastLevel:Int!
+    var zenButton:SKNode!
     override func didMove(to view: SKView) {
         let defaults=UserDefaults.standard
         defaults.set(false, forKey: "SurvivalCompleted")
@@ -93,6 +94,8 @@ class MainMenu:SKScene{
         gm.fontColor=UIColor.white
         gm.position=CGPoint(x: 0, y:self.size.height/4 )
         self.addChild(gm)
+        zenButton=prepZenButton()
+        self.addChild(zenButton)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -112,7 +115,11 @@ class MainMenu:SKScene{
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let cdReadyScene=SKScene(fileNamed: "CountdownReadyScene") as! CountdownReadyScene
             self.view?.presentScene(cdReadyScene,transition: transition)
-               
+        }
+        if zenButton!.contains(touch!.location(in: self)){
+            let transition=SKTransition.moveIn(with: .right, duration: 0.2)
+            let zenScene=SKScene(fileNamed: "ZenReadyScene") as! ZenReadyScene
+            self.view?.presentScene(zenScene,transition: transition)
         }
     }
     
@@ -158,5 +165,22 @@ class MainMenu:SKScene{
         case .magenta:
             return UIColor.magenta
         }
+    }
+    func prepZenButton()->SKNode{
+        let node=SKNode()
+        var zenBackground:SKShapeNode
+        var zenText:SKLabelNode
+        zenBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
+        zenBackground.fillColor=getColor(color: getRandomColor())
+        zenText=SKLabelNode(text: "Mosaic")
+        zenText.fontName="AvenirNext-Bold"
+        zenText.fontSize=15
+        zenText.zPosition=1
+        zenText.fontColor=UIColor.black
+        zenText.verticalAlignmentMode = .center
+        node.addChild(zenBackground)
+        node.addChild(zenText)
+        node.position=CGPoint(x: 0, y: self.size.height/4-3*(self.size.height/3-self.size.height/4))
+        return node
     }
 }
