@@ -57,8 +57,16 @@ class ZenGameScene:SKScene{
         }
     }
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch=touches.first
+        if(started){
+            board!.touchMoved(touch: touch!)
+        }
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch=touches.first
+        if(started){
+            board!.touchUp(touch: touch!)
+        }
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
     }

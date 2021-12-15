@@ -41,6 +41,7 @@ class ZenBoard{
         self.sn=SKShapeNode(rectOf: CGSize(width: w, height: h))
         self.tiles=Array(repeating:[ZenTile](), count: r)
         self.gs=gs
+        self.groupNode=SKNode()
     }
     convenience init(copy:ZenBoard){
         self.init(w: copy.w, h: copy.h, r: copy.r, c: copy.c, gs: copy.gs)
@@ -54,9 +55,16 @@ class ZenBoard{
         }
     }
     func populate(){
+        self.tf=ZenTileFactory(for: self)
+        for i in 0..<r{
+            for j in 0..<c{
+                tiles[i].append(tf!.getRandomTileFor(r: i, c:j))
+                tiles[i][j].updatePosition(animated: false,0)
+            }
+        }
     }
     func touchDown(touch:UITouch){
-        if !boardAnimating{
+        if !boardAnimating && sn.contains(touch.location(in: gs)){
             lastValidBoard=ZenBoard.init(copy: self)
             lastTouch=touch
             for r in tiles{
@@ -70,21 +78,32 @@ class ZenBoard{
                 }
             }
             floodFill(rPos: selectedTile!.row, cPos: selectedTile!.col, target: selectedTile!.color)
-            print(group)
+            let avgX=averagePosition(of: group).x
+            let avgY=averagePosition(of: group).y
+            gs.addChild(groupNode!)
+            groupNode?.position=averagePosition(of: group)
             groupNode?.removeAllChildren()
-            groupNode?.removeFromParent()
             for t in group{
+                t.node.position=CGPoint(x: t.node.position.x-avgX, y: t.node.position.y-avgY)
                 t.selected=true
                 t.finalGrouped=true
                 t.node.removeFromParent()
+            }
+            for t in group{
                 groupNode?.addChild(t.node)
             }
-            gs.addChild(groupNode!)
+            let drag=SKAction.move(to: touch.location(in: gs), duration: 0.2)
+            groupNode!.run(drag)
+    
         }
     }
     func touchMoved(touch:UITouch){
         let drag=SKAction.move(to: touch.location(in: gs), duration: 0)
+        //let drag=SKAction.move(to: CGPoint(x: touch.location(in: gs).x/2, y: touch.location(in: gs).y/2), duration: 0)
         groupNode!.run(drag)
+        for t in group{
+            
+        }
         for st in group{
             for r in tiles{
                 for t in r{
@@ -132,6 +151,7 @@ class ZenBoard{
         }else{
             self.tiles=lastValidBoard!.tiles
         }
+        groupNode?.removeFromParent()
     }
     
     func switchIndices(r1:Int,c1:Int,r2:Int,c2:Int){
@@ -226,7 +246,7 @@ class ZenBoard{
         }
         return ComboID.single
     }
-    func averagePosition(of:[DashTile])->CGPoint{
+    func averagePosition(of:[ZenTile])->CGPoint{
         var ax=0.0
         var ay=0.0
         for t in of{
