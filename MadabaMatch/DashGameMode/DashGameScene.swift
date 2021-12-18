@@ -69,9 +69,9 @@ class DashGameScene: SKScene {
         self.addChild(comboLabel!)
         movesRemaining=SKLabelNode(text:"")
         movesRemaining!.fontName="AvenirNext-Bold"
-        movesRemaining!.fontSize=80
+        movesRemaining!.fontSize=30
         movesRemaining!.color=UIColor.link
-        movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-70)
+            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-30-self.view!.safeAreaInsets.top)
         self.addChild(movesRemaining!)
         // Create shape node to use during mouse interaction
         bBox=SKShapeNode(rectOf: CGSize(width: 120, height: 30),cornerRadius: 10)
@@ -93,12 +93,12 @@ class DashGameScene: SKScene {
         restartButton=SKNode()
         restartButton?.addChild(rBox!)
         restartButton?.addChild(rText!)
-        restartButton?.position=CGPoint(x: self.size.width/2-61, y: self.size.height/2-16)
+        restartButton?.position=CGPoint(x: self.size.width/2-61, y: self.size.height/2-16-self.view!.safeAreaInsets.top)
         self.addChild(restartButton!)
         backButton=SKNode()
         backButton?.addChild(bBox!)
         backButton?.addChild(bText!)
-        backButton?.position=CGPoint(x: -self.size.width/2+61, y: self.size.height/2-16)
+        backButton?.position=CGPoint(x: -self.size.width/2+61, y: self.size.height/2-16-self.view!.safeAreaInsets.top)
         self.addChild(backButton!)
         }else{
             movingFromPause=false

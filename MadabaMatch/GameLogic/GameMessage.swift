@@ -12,11 +12,15 @@ class GameMessage:NSObject{
     private var text:SKLabelNode
     private var box:SKShapeNode
     init(message:String,position:CGPoint,size:CGSize){
-        self.text=SKLabelNode(text: message)
-        self.text.fontColor=UIColor.white
-        self.text.fontName="AvenirNext-Bold"
-        self.text.fontSize=20
+        let attrString = NSMutableAttributedString(string: message)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let range = NSRange(location: 0, length: message.count)
+        attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: range)
+        attrString.addAttributes([NSAttributedString.Key.foregroundColor : UIColor.white, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20)], range: range)
+        self.text=SKLabelNode(attributedText: attrString)
         self.text.verticalAlignmentMode = .center
+        self.text.horizontalAlignmentMode = .center
         self.box=SKShapeNode(rectOf: size, cornerRadius: 5)
         self.box.fillColor=UIColor.black
         self.text.preferredMaxLayoutWidth=self.box.frame.size.width/1.1

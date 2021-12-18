@@ -134,7 +134,7 @@ class DashReadyScene:SKScene{
         bText.verticalAlignmentMode = .center
         node.addChild(bBox)
         node.addChild(bText)
-        node.position=CGPoint(x: -self.size.width/2+61, y: self.size.height/2-16)
+        node.position=CGPoint(x: -self.size.width/2+61+self.view!.safeAreaInsets.left, y: self.size.height/2-16-self.view!.safeAreaInsets.top)
         return node
     }
     func prepTitleNode()->SKNode{

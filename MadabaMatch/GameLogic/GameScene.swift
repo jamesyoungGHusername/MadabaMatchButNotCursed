@@ -72,9 +72,9 @@ class GameScene: SKScene {
         self.addChild(comboLabel!)
         movesRemaining=SKLabelNode(text:"")
         movesRemaining!.fontName="AvenirNext-Bold"
-        movesRemaining!.fontSize=60
+        movesRemaining!.fontSize=30
         movesRemaining!.color=UIColor.link
-        movesRemaining!.position=CGPoint(x: 0, y: board!.h/1.8+2)
+        movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-self.view!.safeAreaInsets.top-15)
         self.addChild(movesRemaining!)
         // Create shape node to use during mouse interaction
         bBox=SKShapeNode(rectOf: CGSize(width: 120, height: 30),cornerRadius: 10)
@@ -96,12 +96,12 @@ class GameScene: SKScene {
         restartButton=SKNode()
         restartButton?.addChild(rBox!)
         restartButton?.addChild(rText!)
-        restartButton?.position=CGPoint(x: self.size.width/2-61, y: self.size.height/2-16)
+        restartButton?.position=CGPoint(x: self.size.width/2-61, y: self.size.height/2-16-self.view!.safeAreaInsets.top)
         self.addChild(restartButton!)
         backButton=SKNode()
         backButton?.addChild(bBox!)
         backButton?.addChild(bText!)
-        backButton?.position=CGPoint(x: -self.size.width/2+61, y: self.size.height/2-16)
+        backButton?.position=CGPoint(x: -self.size.width/2+61, y: self.size.height/2-16-self.view!.safeAreaInsets.top)
         self.addChild(backButton!)
         }else{
             movingFromPause=false
@@ -123,23 +123,32 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
-        if(level+1==11 && readyForNext){
+        readyForNext=true
+        if(level+1==11 && readyForNext && started){
+            print("in end of game block")
             let defaults=UserDefaults.standard
             defaults.set(true, forKey: "SurvivalCompleted")
-            readyForNext=false
-            started=false
+            //readyForNext=false
+            //started=false
+            winningMessage.getNode().removeFromParent()
+            winningMessage=GameMessage(message: "VICTORY\n\n\nFinal Score: \(board!.score)", position: CGPoint(x:0,y:0), size: CGSize(width: self.size.width/2, height: self.size.height/3))
+            self.addChild(winningMessage.getNode())
+            winningMessage.getNode().zPosition=11
+            winningMessage.getNode().run(SKAction.fadeIn(withDuration: 0.5))
             if backButton!.contains(touch!.location(in: self)){
                 print("back tapped")
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
                 let scene = SKScene(fileNamed: "CountdownReadyScene")!
                 self.view?.presentScene(scene,transition: transition)
             }
-        }
-        if readyForNext {
+        }else if readyForNext && started{
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let nextScene = SKScene(fileNamed: "GameScene") as! GameScene
-            
-            if(level+1==10){
+            if(level==10){
+                let transition=SKTransition.moveIn(with: .left, duration: 0.2)
+                let scene = SKScene(fileNamed: "CountdownReadyScene")!
+                self.view?.presentScene(scene,transition: transition)
+            }else if(level+1==10){
                 nextScene.setup(level: 10, message: "FINAL LEVEL", bR: 11, bC: 7, turnGoal: 30,colorsPresent:4,score: board!.score,upperBound: 5,lowerBound: 3)
             }else if (level+1<=5){
                 nextScene.setup(level: level+1, message: "Level \(level+1):\nSurvive \(5+level) turns.", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4,score: board!.score,upperBound: 15,lowerBound: 6)
@@ -147,8 +156,7 @@ class GameScene: SKScene {
                 nextScene.setup(level: level+1, message: "Level \(level+1):\nSurvive \(5+level) turns.", bR: 10, bC: 6, turnGoal: turnGoal+1,colorsPresent:4,score: board!.score,upperBound: 15-level+3,lowerBound: 3)
             }
             self.view?.presentScene(nextScene,transition: transition)
-        }
-        if(started){
+        }else if(started){
             if restartButton!.contains(touch!.location(in: self)){
                 let transition=SKTransition.crossFade(withDuration: 0.5)
                 let nextScene = SKScene(fileNamed: "GameScene") as! GameScene
@@ -242,11 +250,12 @@ class GameScene: SKScene {
             comboLabel!.text="FINAL SCORE: \(board!.score)"
         }else{
             movesRemaining!.fontSize=30
-            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-35)
+            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-self.view!.safeAreaInsets.top-15
+            )
             movesRemaining!.zPosition=20
             movesRemaining!.text="Level \(level!)"
         }
-        if(readyForNext){
+        if(readyForNext && level != 10){
             movesRemaining!.removeFromParent()
             let reveal=SKAction.fadeIn(withDuration: 0.3)
             winningMessage.getNode().zPosition=11

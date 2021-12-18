@@ -94,8 +94,8 @@ class MainMenu:SKScene{
         gm.fontColor=UIColor.white
         gm.position=CGPoint(x: 0, y:self.size.height/4 )
         self.addChild(gm)
-        zenButton=prepZenButton()
-        self.addChild(zenButton)
+        //zenButton=prepZenButton()
+        //self.addChild(zenButton)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -116,11 +116,13 @@ class MainMenu:SKScene{
             let cdReadyScene=SKScene(fileNamed: "CountdownReadyScene") as! CountdownReadyScene
             self.view?.presentScene(cdReadyScene,transition: transition)
         }
+        /*
         if zenButton!.contains(touch!.location(in: self)){
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let zenScene=SKScene(fileNamed: "ZenReadyScene") as! ZenReadyScene
             self.view?.presentScene(zenScene,transition: transition)
         }
+         */
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

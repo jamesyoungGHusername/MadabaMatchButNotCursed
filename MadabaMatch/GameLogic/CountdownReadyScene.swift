@@ -77,7 +77,10 @@ class CountdownReadyScene:SKScene{
         let defaults=UserDefaults.standard
         let score=defaults.integer(forKey: "SurviveScore")
         let completedSurvival=defaults.bool(forKey: "SurvivalCompleted")
-        let lastLevel=defaults.integer(forKey:"SurviveLevel")
+        var lastLevel=defaults.integer(forKey:"SurviveLevel")
+        if lastLevel==0{
+            lastLevel=1
+        }
         var scene1:GameScene
         if(!completedSurvival){
             if lastLevel==10{
@@ -186,7 +189,8 @@ class CountdownReadyScene:SKScene{
         bText.verticalAlignmentMode = .center
         node.addChild(bBox)
         node.addChild(bText)
-        node.position=CGPoint(x: -self.size.width/2+61, y: self.size.height/2-16)
+        node.position=CGPoint(x: -self.size.width/2+61+self.view!.safeAreaInsets.left
+                              , y: self.size.height/2-16-self.view!.safeAreaInsets.top)
         return node
     }
     func prepTitleNode()->SKNode{
@@ -211,20 +215,40 @@ class CountdownReadyScene:SKScene{
     func prepLevelNode()->SKNode{
         let node=SKNode()
         let defaults=UserDefaults.standard
-        let lastLevel=defaults.integer(forKey:"SurviveLevel")
-        var scoreLabel:SKLabelNode
-        var scoreShadow:SKLabelNode
-        scoreLabel=SKLabelNode(text: "Level: \(lastLevel)")
-        scoreShadow=SKLabelNode(text: "Level: \(lastLevel)")
-        scoreLabel.fontName="AvenirNext-Bold"
-        scoreShadow.fontName="AvenirNext-Bold"
-        scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step )
-        scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-2-step)
-        scoreLabel.fontColor=UIColor.white
-        scoreShadow.fontColor=UIColor.systemGray2
-        node.addChild(scoreShadow)
-        scoreShadow.zPosition = -1
-        node.addChild(scoreLabel)
+        let completedSurvival=defaults.bool(forKey: "SurvivalCompleted")
+        if !(completedSurvival){
+            var lastLevel=defaults.integer(forKey:"SurviveLevel")
+            if lastLevel==0{
+                lastLevel=1
+            }
+            var scoreLabel:SKLabelNode
+            var scoreShadow:SKLabelNode
+            scoreLabel=SKLabelNode(text: "Level: \(lastLevel)")
+            scoreShadow=SKLabelNode(text: "Level: \(lastLevel)")
+            scoreLabel.fontName="AvenirNext-Bold"
+            scoreShadow.fontName="AvenirNext-Bold"
+            scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step )
+            scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-2-step)
+            scoreLabel.fontColor=UIColor.white
+            scoreShadow.fontColor=UIColor.systemGray2
+            node.addChild(scoreShadow)
+            scoreShadow.zPosition = -1
+            node.addChild(scoreLabel)
+        }else{
+            var scoreLabel:SKLabelNode
+            var scoreShadow:SKLabelNode
+            scoreLabel=SKLabelNode(text: "COMPLETE")
+            scoreShadow=SKLabelNode(text: "COMPLETE")
+            scoreLabel.fontName="AvenirNext-Bold"
+            scoreShadow.fontName="AvenirNext-Bold"
+            scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step )
+            scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-2-step)
+            scoreLabel.fontColor=UIColor.white
+            scoreShadow.fontColor=UIColor.systemGray2
+            node.addChild(scoreShadow)
+            scoreShadow.zPosition = -1
+            node.addChild(scoreLabel)
+        }
         return node
     }
 }
