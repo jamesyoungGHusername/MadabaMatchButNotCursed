@@ -108,7 +108,7 @@ class DashReadyScene:SKScene{
         var htpBox:SKShapeNode
         var htpText:SKLabelNode
         htpBox=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
-        htpBox.fillColor=UIColor.systemBlue
+        htpBox.fillColor=getColor(color: getRandomColor())
         htpText=SKLabelNode(text: "How To Play")
         htpText.fontName="AvenirNext-Bold"
         htpText.fontSize=15
@@ -117,7 +117,7 @@ class DashReadyScene:SKScene{
         htpText.verticalAlignmentMode = .center
         node.addChild(htpBox)
         node.addChild(htpText)
-        node.position=CGPoint(x: 0, y: self.size.height/3-step*3.5)
+        node.position=CGPoint(x: 0, y: self.size.height/3-step*3)
         return node
     }
     func prepBackButton()->SKNode{
@@ -144,7 +144,7 @@ class DashReadyScene:SKScene{
         titleLabel=SKLabelNode(text: "50-Yard Dash")
         titleLabel.fontName="AvenirNext-Bold"
         titleLabel.fontSize=40
-        titleLabel.fontColor=UIColor.white
+        titleLabel.fontColor=getColor(color: getRandomColor())
         titleShadow=SKLabelNode(text: "50-Yard Dash")
         titleShadow.fontName="AvenirNext-Bold"
         titleShadow.fontSize=40
@@ -168,11 +168,36 @@ class DashReadyScene:SKScene{
         scoreShadow.fontName="AvenirNext-Bold"
         scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step )
         scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-2-step)
-        scoreLabel.fontColor=UIColor.white
+        scoreLabel.fontColor=getColor(color: getRandomColor())
         scoreShadow.fontColor=UIColor.systemGray2
         node.addChild(scoreShadow)
         scoreShadow.zPosition = -1
         node.addChild(scoreLabel)
         return node
+    }
+    func getRandomColor()->TileColor{
+        return TileColor.allCases.randomElement()!
+    }
+    func getColor(color:TileColor)->UIColor{
+        switch color {
+        case .red:
+            return UIColor.systemRed
+        case .blue:
+            return UIColor.systemBlue
+        case .purple:
+            return UIColor.systemPurple
+        case .green:
+            return UIColor.systemGreen
+        case .yellow:
+            return UIColor.systemYellow
+        case .orange:
+            return UIColor.systemOrange
+        case .pink:
+            return UIColor.systemTeal
+        case .brown:
+            return UIColor.green
+        case .magenta:
+            return UIColor.magenta
+        }
     }
 }

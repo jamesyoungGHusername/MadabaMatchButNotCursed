@@ -125,7 +125,7 @@ class CountdownReadyScene:SKScene{
         scoreLabel=SKLabelNode(text: "Score: \(defaults.integer(forKey: "SurviveScore"))")
         scoreLabel.fontName="AvenirNext-Bold"
         scoreLabel.fontSize=30
-        scoreLabel.fontColor=UIColor.white
+        scoreLabel.fontColor=getColor(color: getRandomColor())
         scoreLabel.horizontalAlignmentMode = .center
         scoreShadow=SKLabelNode(text: "Score: \(defaults.integer(forKey: "SurviveScore"))")
         scoreShadow.horizontalAlignmentMode = .center
@@ -144,7 +144,7 @@ class CountdownReadyScene:SKScene{
         var dashBackground:SKShapeNode
         var dashText:SKLabelNode
         dashBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
-        dashBackground.fillColor=UIColor.systemBlue
+        dashBackground.fillColor=getColor(color: getRandomColor())
         dashText=SKLabelNode(text: "Start")
         dashText.fontName="AvenirNext-Bold"
         dashText.fontSize=15
@@ -161,7 +161,7 @@ class CountdownReadyScene:SKScene{
         var dashBackground:SKShapeNode
         var restartText:SKLabelNode
         dashBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
-        dashBackground.fillColor=UIColor.systemBlue
+        dashBackground.fillColor=getColor(color: getRandomColor())
         restartText=SKLabelNode(text: "Reset Progress")
         restartText.fontName="AvenirNext-Bold"
         restartText.fontSize=15
@@ -170,7 +170,7 @@ class CountdownReadyScene:SKScene{
         restartText.verticalAlignmentMode = .center
         node.addChild(dashBackground)
         node.addChild(restartText)
-        node.position=CGPoint(x: 0, y: self.size.height/3-step*3.5)
+        node.position=CGPoint(x: 0, y: self.size.height/3-step*3)
         return node
     }
     func prepHowToPlayMessage()->SKNode{
@@ -178,7 +178,7 @@ class CountdownReadyScene:SKScene{
         var htpBox:SKShapeNode
         var htpText:SKLabelNode
         htpBox=SKShapeNode(rectOf: CGSize(width: self.size.width-1.5*step, height:self.size.height-1.5*step),cornerRadius: 10)
-        htpBox.fillColor=UIColor.systemBlue
+        htpBox.fillColor=getColor(color: getRandomColor())
         htpText=SKLabelNode(text: "HOW TO PLAY:\nTouch and drag a tile to move it around the board.\n\nThe tile you're dragging will switch places with tiles in its way.\n\nTouching a tile, moving it, and then letting go of it counts as one turn.\nAt the end of each turn, every tile left on the board counts down by one.\n\nMatch groups of four or more tiles of the same color to remove them and score points.\nIf any tiles count down to zero, it's game over.")
         htpText.numberOfLines=7
         htpText.verticalAlignmentMode = .center
@@ -196,7 +196,7 @@ class CountdownReadyScene:SKScene{
         var htpBox:SKShapeNode
         var htpText:SKLabelNode
         htpBox=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
-        htpBox.fillColor=UIColor.systemBlue
+        htpBox.fillColor=getColor(color: getRandomColor())
         htpText=SKLabelNode(text: "How To Play")
         htpText.fontName="AvenirNext-Bold"
         htpText.fontSize=15
@@ -205,7 +205,7 @@ class CountdownReadyScene:SKScene{
         htpText.verticalAlignmentMode = .center
         node.addChild(htpBox)
         node.addChild(htpText)
-        node.position=CGPoint(x: 0, y: self.size.height/3-step*5)
+        node.position=CGPoint(x: 0, y: self.size.height/3-step*4)
         return node
     }
     func prepBackButton()->SKNode{
@@ -233,7 +233,7 @@ class CountdownReadyScene:SKScene{
         titleLabel=SKLabelNode(text: "Countdown")
         titleLabel.fontName="AvenirNext-Bold"
         titleLabel.fontSize=40
-        titleLabel.fontColor=UIColor.white
+        titleLabel.fontColor=getColor(color: getRandomColor())
         titleShadow=SKLabelNode(text: "Countdown")
         titleShadow.fontName="AvenirNext-Bold"
         titleShadow.fontSize=40
@@ -262,7 +262,7 @@ class CountdownReadyScene:SKScene{
             scoreShadow.fontName="AvenirNext-Bold"
             scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step )
             scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-2-step)
-            scoreLabel.fontColor=UIColor.white
+            scoreLabel.fontColor=getColor(color: getRandomColor())
             scoreShadow.fontColor=UIColor.systemGray2
             node.addChild(scoreShadow)
             scoreShadow.zPosition = -1
@@ -276,12 +276,37 @@ class CountdownReadyScene:SKScene{
             scoreShadow.fontName="AvenirNext-Bold"
             scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step )
             scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-2-step)
-            scoreLabel.fontColor=UIColor.white
+            scoreLabel.fontColor=getColor(color: getRandomColor())
             scoreShadow.fontColor=UIColor.systemGray2
             node.addChild(scoreShadow)
             scoreShadow.zPosition = -1
             node.addChild(scoreLabel)
         }
         return node
+    }
+    func getRandomColor()->TileColor{
+        return TileColor.allCases.randomElement()!
+    }
+    func getColor(color:TileColor)->UIColor{
+        switch color {
+        case .red:
+            return UIColor.systemRed
+        case .blue:
+            return UIColor.systemBlue
+        case .purple:
+            return UIColor.systemPurple
+        case .green:
+            return UIColor.systemGreen
+        case .yellow:
+            return UIColor.systemYellow
+        case .orange:
+            return UIColor.systemOrange
+        case .pink:
+            return UIColor.systemTeal
+        case .brown:
+            return UIColor.green
+        case .magenta:
+            return UIColor.magenta
+        }
     }
 }
