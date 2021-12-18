@@ -66,6 +66,8 @@ class CountdownReadyScene:SKScene{
                 self.view?.presentScene(scene,transition: transition)
             }
             if restartNode.contains(touch!.location(in: self)){
+                let defaults=UserDefaults.standard
+                defaults.set(false, forKey: "SurvivalCompleted")
                 let transition=SKTransition.moveIn(with: .right, duration: 0.2)
                 var scene1 = SKScene(fileNamed: "GameScene") as! GameScene
                 scene1.setup(level: 1, message: "Drag to match groups of 4 tiles.\nTiles count down by one each turn.\nDo not let any reach zero.", bR: 10, bC: 6, turnGoal: 5,colorsPresent:4,score: 0,upperBound:15 ,lowerBound:6)
