@@ -123,7 +123,7 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
-        readyForNext=true
+        //readyForNext=true
         if(level+1==11 && readyForNext && started){
             print("in end of game block")
             let defaults=UserDefaults.standard
@@ -249,8 +249,8 @@ class GameScene: SKScene {
             comboLabel!.fontSize=25
             comboLabel!.text="FINAL SCORE: \(board!.score)"
         }else{
-            movesRemaining!.fontSize=30
-            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-self.view!.safeAreaInsets.top-15
+            movesRemaining!.fontSize=20
+            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-self.view!.safeAreaInsets.top-20
             )
             movesRemaining!.zPosition=20
             movesRemaining!.text="Level \(level!)"

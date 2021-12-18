@@ -33,7 +33,7 @@ class MainMenu:SKScene{
     var zenButton:SKNode!
     override func didMove(to view: SKView) {
         let defaults=UserDefaults.standard
-        defaults.set(false, forKey: "SurvivalCompleted")
+        //defaults.set(false, forKey: "SurvivalCompleted")
         lastLevel=defaults.integer(forKey:"SurviveLevel")
         titleLabel=SKLabelNode(text: "Madaba Match")
         titleLabel!.fontName="AvenirNext-Bold"
@@ -53,17 +53,9 @@ class MainMenu:SKScene{
         self.addChild(titleNode!)
         buttonBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
         buttonBackground?.fillColor=getColor(color: getRandomColor())
-        if(lastLevel==0){
-            buttonText=SKLabelNode(text: "Countdown")
-        }else{
-            buttonText=SKLabelNode(text: "Countdown")
-        }
-        if(defaults.bool(forKey: "SurvivalCompleted")){
-            buttonText=SKLabelNode(text: "Countdown Completed")
-            buttonText.lineBreakMode = .byWordWrapping
-            buttonText.numberOfLines=2
-            buttonText.preferredMaxLayoutWidth=150
-        }
+        buttonText=SKLabelNode(text: "Countdown")
+
+        
         
         buttonText!.fontName="AvenirNext-Bold"
         buttonText!.fontSize=15

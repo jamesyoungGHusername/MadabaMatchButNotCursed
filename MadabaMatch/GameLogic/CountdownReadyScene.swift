@@ -17,7 +17,9 @@ class CountdownReadyScene:SKScene{
     var levelNode:SKNode!
     var restartNode:SKNode!
     var step:Double!
+    var scoreLabel:SKNode!
     override func didMove(to view: SKView) {
+        let defaults=UserDefaults.standard
         self.backgroundColor=UIColor.black
         step=self.size.height/3-self.size.height/4
         displayHTP=false
@@ -34,6 +36,13 @@ class CountdownReadyScene:SKScene{
         self.addChild(levelNode)
         restartNode=prepRestartButton()
         self.addChild(restartNode)
+        scoreLabel=prepScoreLabel()
+        self.addChild(scoreLabel)
+        if defaults.bool(forKey: "SurvivalCompleted"){
+            startButton.removeFromParent()
+        }else{
+            scoreLabel.removeFromParent()
+        }
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch=touches.first
@@ -105,6 +114,28 @@ class CountdownReadyScene:SKScene{
                 self.view?.presentScene(scene1,transition: transition)
             }
         }
+    }
+    func prepScoreLabel()->SKNode{
+        let node=SKNode()
+        let defaults=UserDefaults.standard
+        var scoreLabel:SKLabelNode
+        var scoreShadow:SKLabelNode
+        scoreLabel=SKLabelNode(text: "Score: \(defaults.integer(forKey: "SurviveScore"))")
+        scoreLabel.fontName="AvenirNext-Bold"
+        scoreLabel.fontSize=30
+        scoreLabel.fontColor=UIColor.white
+        scoreLabel.horizontalAlignmentMode = .center
+        scoreShadow=SKLabelNode(text: "Score: \(defaults.integer(forKey: "SurviveScore"))")
+        scoreShadow.horizontalAlignmentMode = .center
+        scoreShadow.fontName="AvenirNext-Bold"
+        scoreShadow.fontSize=30
+        scoreShadow.fontColor=UIColor.systemGray2
+        scoreLabel.position=CGPoint(x: 0, y:self.size.height/3-step*2 )
+        scoreShadow.position=CGPoint(x: 2, y:self.size.height/3-step*2-2)
+        node.addChild(scoreShadow)
+        scoreShadow.zPosition = -1
+        node.addChild(scoreLabel)
+        return node
     }
     func prepStartButton()->SKNode{
         let node=SKNode()
