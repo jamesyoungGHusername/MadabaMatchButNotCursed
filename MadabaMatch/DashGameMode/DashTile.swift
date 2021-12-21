@@ -26,7 +26,7 @@ class DashTile:NSObject, NSSecureCoding{
     //var movesNode=SKNode()
     var grouped=false
     var finalGrouped=false
-    let tileTextureAtlas=SKTextureAtlas(named: "TilePatterns.atlas")
+    
     init(row:Int,col:Int,w:Double,h:Double,position:CGPoint,node:SKShapeNode,color:TileColor){
         
         self.row=row
@@ -39,53 +39,7 @@ class DashTile:NSObject, NSSecureCoding{
         self.color=color
         self.moves=15 //Int.random(in: 0...5)
         
-        switch color {
-        case .red:
-            self.node.fillColor = UIColor.systemRed
-            let redTexture:SKTexture
-            redTexture=tileTextureAtlas.textureNamed("redTile")
-            self.node.addChild(SKSpriteNode(texture: redTexture,size: CGSize(width: w, height: h)))
-        case .blue:
-            self.node.fillColor=UIColor.systemBlue
-            let blueTexture:SKTexture
-            blueTexture=tileTextureAtlas.textureNamed("darkBlueTile")
-            self.node.addChild(SKSpriteNode(texture: blueTexture,size: CGSize(width: w, height: h)))
-        case .purple:
-            self.node.fillColor=UIColor.systemPurple
-            let purpleTexture:SKTexture
-            purpleTexture=tileTextureAtlas.textureNamed("purpleTile")
-            self.node.addChild(SKSpriteNode(texture: purpleTexture,size: CGSize(width: w, height: h)))
-        case .green:
-            self.node.fillColor=UIColor.systemGreen
-            let greenTexture:SKTexture
-            greenTexture=tileTextureAtlas.textureNamed("darkGreenTexture")
-            self.node.addChild(SKSpriteNode(texture: greenTexture,size: CGSize(width: w, height: h)))
-        case .yellow:
-            self.node.fillColor=UIColor.systemYellow
-            let yellowTexture:SKTexture
-            yellowTexture=tileTextureAtlas.textureNamed("yellowTile")
-            self.node.addChild(SKSpriteNode(texture: yellowTexture,size: CGSize(width: w, height: h)))
-        case .orange:
-            self.node.fillColor=UIColor.systemOrange
-            let redTexture:SKTexture
-            redTexture=tileTextureAtlas.textureNamed("orangeTile")
-            self.node.addChild(SKSpriteNode(texture: redTexture,size: CGSize(width: w, height: h)))
-        case .pink:
-            self.node.fillColor=UIColor.systemTeal
-            let blueTexture:SKTexture
-            blueTexture=tileTextureAtlas.textureNamed("tealTile")
-            self.node.addChild(SKSpriteNode(texture: blueTexture,size: CGSize(width: w, height: h)))
-        case .brown:
-            self.node.fillColor=UIColor.green
-            let greenTexture:SKTexture
-            greenTexture=tileTextureAtlas.textureNamed("lightGreenTile")
-            self.node.addChild(SKSpriteNode(texture: greenTexture,size: CGSize(width: w, height: h)))
-        case .magenta:
-            self.node.fillColor=UIColor.magenta
-            let purpleTexture:SKTexture
-            purpleTexture=tileTextureAtlas.textureNamed("magentaTile")
-            self.node.addChild(SKSpriteNode(texture: purpleTexture,size: CGSize(width: w, height: h)))
-        }
+        
         /*
        // self.moveLabel.verticalAlignmentMode = .center
         //self.moveShadow.verticalAlignmentMode = .center
