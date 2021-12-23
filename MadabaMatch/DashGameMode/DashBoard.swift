@@ -217,8 +217,9 @@ class DashBoard{
                                 if self.movesRemaining<=0{
                                     print("setting gameover to true")
                                     self.gameOver=true
-                                    self.gs.winningMessage.setMessage(s: "FINAL SCORE: \(self.score)")
-                                    self.gs.winningMessage.getNode().zPosition=20
+                                    self.gs.winningMessage=GameMessage(message: "Final Score: \(self.score)", position: CGPoint(x:-self.gs.size.height/3,y:self.gs.size.width), size: CGSize(width: self.gs.size.width/2, height: self.gs.size.height/10))
+                                    self.gs.addChild(self.gs.winningMessage.getNode())
+                                    self.gs.winningMessage.getNode().zPosition=50
                                     self.gs.winningMessage.getNode().run(SKAction.fadeIn(withDuration: 0.3))
                                 }
                             }
@@ -233,8 +234,9 @@ class DashBoard{
             if movesRemaining<=0{
                 print("End of the game detected")
                 gameOver=true
-                self.gs.winningMessage.setMessage(s: "FINAL SCORE: \(self.score)")
-                self.gs.winningMessage.getNode().zPosition=20
+                self.gs.winningMessage=GameMessage(message: "Final Score: \(score)", position: CGPoint(x:-self.gs.size.height/3,y:self.gs.size.width), size: CGSize(width: self.gs.size.width/2, height: self.gs.size.height/10))
+                self.gs.addChild(self.gs.winningMessage.getNode())
+                self.gs.winningMessage.getNode().zPosition=50
                 self.gs.winningMessage.getNode().run(SKAction.fadeIn(withDuration: 0.3))
             }
             if(self.moved){

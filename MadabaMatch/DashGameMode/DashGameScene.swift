@@ -34,6 +34,7 @@ class DashGameScene: SKScene {
     var ub=15
     var lb=5
     var movingFromPause=false
+    let generator = UISelectionFeedbackGenerator()
     override func didMove(to view: SKView) {
         self.backgroundColor=UIColor.black
         if(!movingFromPause){
@@ -71,7 +72,7 @@ class DashGameScene: SKScene {
         movesRemaining!.fontName="AvenirNext-Bold"
         movesRemaining!.fontSize=30
         movesRemaining!.color=UIColor.link
-            movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-30-self.view!.safeAreaInsets.top)
+        movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-30-self.view!.safeAreaInsets.top)
         self.addChild(movesRemaining!)
         // Create shape node to use during mouse interaction
         bBox=SKShapeNode(rectOf: CGSize(width: 120, height: 30),cornerRadius: 10)
@@ -123,11 +124,12 @@ class DashGameScene: SKScene {
         
         if(started){
             if backButton!.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
                 let scene = SKScene(fileNamed: "DashReadyScene")!
                 self.view?.presentScene(scene,transition: transition)
             }else if restartButton!.contains(touch!.location(in: self)){
-                
+                generator.selectionChanged()
                 let transition=SKTransition.crossFade(withDuration: 0.5)
                 let scene = SKScene(fileNamed: "DashGameScene") as! DashGameScene
                 scene.setup(level: 1, message: "Drag to match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
@@ -136,6 +138,7 @@ class DashGameScene: SKScene {
             if(!board!.gameOver){
                 board!.touchDown(touch: touch!)
                 movesRemaining!.zPosition=2
+                
             }
             //movesRemaining!.position=CGPoint(x: touch!.location(in: self).x, y: touch!.location(in: self).y+50)
         }else{
@@ -157,7 +160,8 @@ class DashGameScene: SKScene {
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        let touch=touches.first
+        board!.touchUp(touch: touch!)
     }
     
     var winningMessage:GameMessage!

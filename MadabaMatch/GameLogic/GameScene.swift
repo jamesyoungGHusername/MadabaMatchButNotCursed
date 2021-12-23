@@ -34,6 +34,7 @@ class GameScene: SKScene {
     var readyForNext:Bool=false
     var ub=15
     var lb=5
+    let generator = UISelectionFeedbackGenerator()
     var movingFromPause=false
     override func didMove(to view: SKView) {
         if(!movingFromPause){
@@ -180,7 +181,7 @@ class GameScene: SKScene {
                 }catch{
                     print("error saving scene")
                 }
-                
+                generator.selectionChanged()
                 
                 
                
@@ -239,15 +240,19 @@ class GameScene: SKScene {
         comboLabel!.text="SCORE: \(localScore)"
         
         if(board!.gameOver && !readyForNext){
-            movesRemaining!.position=CGPoint(x: 0, y: 0)
+            let background=SKShapeNode(rectOf: CGSize(width: self.size.width-3, height: self.size.height/3 ))
+            background.fillColor=UIColor.black
+            self.addChild(background)
+            background.zPosition=19
+            movesRemaining!.position=CGPoint(x: 0, y: 25)
             movesRemaining!.zPosition=20
             movesRemaining!.text="GAME OVER"
             let defaults=UserDefaults.standard
             defaults.set(level,forKey: "SurviveLevel")
-            comboLabel!.position=CGPoint(x: 0, y: -50)
+            comboLabel!.position=CGPoint(x: 0, y: -25)
             comboLabel!.zPosition=20
             comboLabel!.fontSize=25
-            comboLabel!.text="FINAL SCORE: \(board!.score)"
+            comboLabel!.text="SCORE: \(board!.score)"
         }else{
             movesRemaining!.fontSize=20
             movesRemaining!.position=CGPoint(x: 0, y: self.size.height/2-self.view!.safeAreaInsets.top-20

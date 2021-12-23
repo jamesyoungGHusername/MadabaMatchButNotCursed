@@ -31,6 +31,8 @@ class MainMenu:SKScene{
     var scene1:GameScene!
     var lastLevel:Int!
     var zenButton:SKNode!
+    var cbButton:SKNode!
+    let generator = UISelectionFeedbackGenerator()
     override func didMove(to view: SKView) {
         let defaults=UserDefaults.standard
         //defaults.set(false, forKey: "SurvivalCompleted")
@@ -86,6 +88,13 @@ class MainMenu:SKScene{
         gm.fontColor=UIColor.white
         gm.position=CGPoint(x: 0, y:self.size.height/4 )
         self.addChild(gm)
+        let st=SKLabelNode(text: "Settings:")
+        st.fontSize=30
+        st.fontColor=UIColor.white
+        st.position=CGPoint(x: 0, y:-self.size.height/5 )
+        self.addChild(st)
+        cbButton=prepColorBlindButton()
+        self.addChild(cbButton)
         //zenButton=prepZenButton()
         //self.addChild(zenButton)
     }
@@ -100,13 +109,20 @@ class MainMenu:SKScene{
         print(lastLevel!)
         
         if dashButton!.contains(touch!.location(in: self)){
+            generator.selectionChanged()
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let dashScene=SKScene(fileNamed: "DashReadyScene") as! DashReadyScene
             self.view?.presentScene(dashScene,transition: transition)
         }else if button!.contains(touch!.location(in: self)){
+            generator.selectionChanged()
             let transition=SKTransition.moveIn(with: .right, duration: 0.2)
             let cdReadyScene=SKScene(fileNamed: "CountdownReadyScene") as! CountdownReadyScene
             self.view?.presentScene(cdReadyScene,transition: transition)
+        }else if cbButton!.contains(touch!.location(in: self)){
+            defaults.set(!defaults.bool(forKey:"CBMode"), forKey: "CBMode")
+            cbButton.removeFromParent()
+            cbButton=prepColorBlindButton()
+            self.addChild(cbButton)
         }
         /*
         if zenButton!.contains(touch!.location(in: self)){
@@ -175,6 +191,28 @@ class MainMenu:SKScene{
         node.addChild(zenBackground)
         node.addChild(zenText)
         node.position=CGPoint(x: 0, y: self.size.height/4-3*(self.size.height/3-self.size.height/4))
+        return node
+    }
+    func prepColorBlindButton()->SKNode{
+        let node=SKNode()
+        var cbBackground:SKShapeNode
+        var cbText:SKLabelNode
+        let defaults=UserDefaults.standard
+        cbBackground=SKShapeNode(rectOf: CGSize(width: 200, height: 50),cornerRadius: 10)
+        cbBackground.fillColor=getColor(color: getRandomColor())
+        if(defaults.bool(forKey: "CBMode")){
+            cbText=SKLabelNode(text: "Color-Blind Mode: ON")
+        }else{
+            cbText=SKLabelNode(text: "Color-Blind Mode: OFF")
+        }
+        cbText.fontName="AvenirNext-Bold"
+        cbText.fontSize=15
+        cbText.zPosition=1
+        cbText.fontColor=UIColor.black
+        cbText.verticalAlignmentMode = .center
+        node.addChild(cbBackground)
+        node.addChild(cbText)
+        node.position=CGPoint(x: 0, y: -self.size.height/5-(self.size.height/3-self.size.height/4))
         return node
     }
 }

@@ -16,6 +16,7 @@ class DashReadyScene:SKScene{
     var titleNode:SKNode!
     var scoreNode:SKNode!
     var step:Double!
+    let generator = UISelectionFeedbackGenerator()
     override func didMove(to view: SKView) {
         self.backgroundColor=UIColor.black
         step=self.size.height/3-self.size.height/4
@@ -39,6 +40,7 @@ class DashReadyScene:SKScene{
             htpMessage.run(fadeOut, completion:{self.htpMessage.removeFromParent();self.displayHTP=false;})
         }else{
             if htpButton.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 displayHTP=true
                 let fadeIn=SKAction.fadeIn(withDuration: 0.5)
                 self.addChild(htpMessage)
@@ -46,12 +48,14 @@ class DashReadyScene:SKScene{
                 htpMessage.run(fadeIn)
             }
             if startButton.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 let transition=SKTransition.moveIn(with: .right, duration: 0.2)
                 let dashScene=SKScene(fileNamed: "DashGameScene") as! DashGameScene
                 dashScene.setup(level: 1, message: "Drag to match groups of 4 tiles.\nYou have 50 moves.", bR: 10, bC: 6, turnGoal: 10, colorsPresent: 4, score: 0, upperBound: 15, lowerBound: 5)
                 self.view?.presentScene(dashScene,transition: transition)
             }
             if backButton.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
                 let scene = SKScene(fileNamed: "MainMenu")!
                 self.view?.presentScene(scene,transition: transition)

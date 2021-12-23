@@ -18,6 +18,7 @@ class CountdownReadyScene:SKScene{
     var restartNode:SKNode!
     var step:Double!
     var scoreLabel:SKNode!
+    let generator = UISelectionFeedbackGenerator()
     override func didMove(to view: SKView) {
         let defaults=UserDefaults.standard
         self.backgroundColor=UIColor.black
@@ -51,6 +52,7 @@ class CountdownReadyScene:SKScene{
             htpMessage.run(fadeOut, completion:{self.htpMessage.removeFromParent();self.displayHTP=false;})
         }else{
             if htpButton.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 displayHTP=true
                 let fadeIn=SKAction.fadeIn(withDuration: 0.5)
                 self.addChild(htpMessage)
@@ -58,14 +60,17 @@ class CountdownReadyScene:SKScene{
                 htpMessage.run(fadeIn)
             }
             if startButton.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 transitionToGame()
             }
             if backButton.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 let transition=SKTransition.moveIn(with: .left, duration: 0.2)
                 let scene = SKScene(fileNamed: "MainMenu")!
                 self.view?.presentScene(scene,transition: transition)
             }
             if restartNode.contains(touch!.location(in: self)){
+                generator.selectionChanged()
                 let defaults=UserDefaults.standard
                 defaults.set(false, forKey: "SurvivalCompleted")
                 let transition=SKTransition.moveIn(with: .right, duration: 0.2)
